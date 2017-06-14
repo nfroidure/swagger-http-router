@@ -1,0 +1,228 @@
+{
+  "host": "localhost:1337",
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Sample Swagger",
+    "description": "A sample Swagger file for testing purpose."
+  },
+  "basePath": "/v1",
+  "schemes": ["http"],
+  "paths": {
+    "/ping": {
+      "head": {
+        "operationId": "ping",
+        "summary": "Checks API's availability.",
+        "responses": {
+          "200": {
+            "description": "Pong"
+          }
+        }
+      }
+    },
+    "/users/{userId}/avatar": {
+      "head": {
+        "operationId": "headUserAvatar",
+        "summary": "Checks user's avatar existance.",
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "type": "number",
+          "pattern": "^[0-9]+$",
+          "required": true
+        }],
+        "produces": [
+          "image/jpeg"
+        ],
+        "responses": {
+          "200": {
+            "description": "User avatar exists."
+          },
+          "404": {
+            "description": "User avatar not found"
+          }
+        }
+      },
+      "get": {
+        "operationId": "getUserAvatar",
+        "summary": "Retrieve user's avatar.",
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "type": "number",
+          "pattern": "^[0-9]+$",
+          "required": true
+        }],
+        "produces": [
+          "image/jpeg"
+        ],
+        "responses": {
+          "200": {
+            "description": "User avatar found."
+          },
+          "404": {
+            "description": "User avatar not found"
+          }
+        }
+      },
+      "put": {
+        "operationId": "putUserAvatar",
+        "summary": "Set user's avatar.",
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "type": "number",
+          "pattern": "^[0-9]+$",
+          "required": true
+        }, {
+          "in": "header",
+          "name": "content-type",
+          "type": "string",
+          "required": true
+        }],
+        "produces": [
+          "image/jpeg"
+        ],
+        "consumes": [
+          "image/jpeg",
+          "image/png"
+        ],
+        "responses": {
+          "200": {
+            "description": "User avatar set."
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteUserAvatar",
+        "summary": "Ensure user's avatar is gone.",
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "type": "number",
+          "pattern": "^[0-9]+$",
+          "required": true
+        }],
+        "consumes": [],
+        "produces": [],
+        "responses": {
+          "410": {
+            "description": "User avatar is gone."
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "operationId": "getUser",
+        "summary": "Retrieve a user.",
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "type": "number",
+          "pattern": "^[0-9]+$",
+          "required": true
+        }, {
+          "in": "query",
+          "name": "extended",
+          "type": "boolean",
+          "required": true
+        }, {
+          "in": "query",
+          "name": "archived",
+          "type": "boolean"
+        }],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "number" },
+                "name": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putUser",
+        "summary": "Upsert a user.",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json",
+          "application/vnd.github+json"
+        ],
+        "parameters": [{
+          "in": "path",
+          "name": "userId",
+          "type": "number",
+          "pattern": "^[0-9]+$",
+          "required": true
+        }, {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/User"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "User updated",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "number" },
+                "name": { "type": "string" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "transactionId": { "type": "string" },
+        "code": {
+          "type": "string",
+          "pattern": "^E_[a-zA-Z0-9_]+$"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
