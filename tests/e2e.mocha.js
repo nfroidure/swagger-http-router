@@ -8,11 +8,15 @@ const supertest = require('supertest');
 
 describe('swagger-http-router', () => {
   describe('with a dry run', () => {
-    it('should work', (done) => {
+    it('should work', function(done) {
+      this.timeout(5000); // eslint-disable-line
       new Promise((resolve, reject) => {
         exec(
           'node ' + path.join(__dirname, 'dry-run.js'),
-          { env: Object.assign({}, process.env, { DRY_RUN: 1 }) },
+          { env: Object.assign({}, process.env, {
+            NODE_ENV: 'development',
+            DRY_RUN: 1,
+          }) },
           (err, stdout, stderr) => {
             if(err) {
               reject(err);
@@ -47,7 +51,8 @@ HTTP server closed
   });
 
   describe('with a remote call', () => {
-    it('should work', (done) => {
+    it('should work', function(done) {
+      this.timeout(5000); // eslint-disable-line
       let resolveServerPromise;
       const serverPromise = new Promise((resolve) => {
         resolveServerPromise = resolve;
@@ -55,7 +60,9 @@ HTTP server closed
       const shutdownPromise = new Promise((resolve, reject) => {
         exec(
           'node ' + path.join(__dirname, 'remote-shutdown.js'),
-          { env: Object.assign({}, process.env) },
+          { env: Object.assign({}, process.env, {
+            NODE_ENV: 'development',
+          }) },
           (err, stdout, stderr) => {
             if(err) {
               reject(err);
@@ -83,9 +90,7 @@ HTTP server closed
           resolve();
         });
       }))
-      .then(() => {
-        return shutdownPromise;
-      })
+      .then(() => shutdownPromise)
       .then(({ stdout, stderr }) => {
         assert.equal(stdout.toString(),
 `HTTP Server listening at "http://localhost:1337".
