@@ -242,8 +242,8 @@ function initHTTPRouter({
           const accept = request.headers.accept || '*';
 
           validMediaTypes = preferredMediaType(
-            accept,
-            API.produces || (operation && operation.produces) || []
+            '*/*' === accept ? '*' : accept,
+            (operation && operation.produces) || API.produces || []
           );
 
           if(!response) {
