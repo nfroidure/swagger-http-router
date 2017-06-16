@@ -253,6 +253,8 @@ function initHTTPRouter({
             throw new HTTPError(500, 'E_NO_RESPONSE_STATUS');
           }
 
+          response.headers = response.headers || {};
+
           if(
             response.body &&
             0 === validMediaTypes.length
