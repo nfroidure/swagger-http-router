@@ -17,7 +17,7 @@ const preferredMediaType = require('negotiator/lib/encoding');
 
 const SEARCH_SEPARATOR = '?';
 const DEFAULT_DEBUG_NODE_ENVS = ['test', 'development'];
-const DEFAULT_BUFFER_LIMIT = '500k';
+const DEFAULT_BUFFER_LIMIT = '500kB';
 const DEFAULT_PARSERS = {
   'application/json': JSON.parse.bind(JSON),
 };
