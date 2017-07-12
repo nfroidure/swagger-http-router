@@ -145,7 +145,7 @@ function initHTTPTransaction({
         reqHeaders: req.headers,
         errored: false,
       };
-      const delayPromise = delay.create(DEFAULT_TIMEOUT);
+      const delayPromise = delay.create(TIMEOUT);
       let id = req.headers['transaction-id'] || uniqueId();
 
       // Handle bad client transaction ids
