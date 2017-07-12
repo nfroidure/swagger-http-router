@@ -1,3 +1,14 @@
+<a name="0.0.3"></a>
+## [0.0.3](https://github.com/nfroidure/swagger-http-router/compare/v0.0.2...v0.0.3) (2017-07-12)
+
+
+### Bug Fixes
+
+* **Router:** Fix the router buffer size ([b1839d8](https://github.com/nfroidure/swagger-http-router/commit/b1839d8))
+* **Transaction:** Fix the transaction timeout customization ([c19166d](https://github.com/nfroidure/swagger-http-router/commit/c19166d))
+
+
+
 <a name="0.0.2"></a>
 ## [0.0.2](https://github.com/nfroidure/swagger-http-router/compare/v0.0.1...v0.0.2) (2017-06-16)
 

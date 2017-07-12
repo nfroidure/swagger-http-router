@@ -1,6 +1,6 @@
 {
   "name": "swagger-http-router",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A HTTP router based on your Swagger definition.",
   "main": "src/index.js",
   "metapak": {
