@@ -20,7 +20,7 @@ It is very opiniated and clearly diverges from the
 Here, the single source of truth is your API
  definition. No documentation, no route.
 
-[See in context](./src/router.js#L31-L42)
+[See in context](./src/router.js#L34-L45)
 
 
 
@@ -52,7 +52,7 @@ Also, looking closely to Prepack that
  time costs:
  https://github.com/facebook/prepack/issues/522#issuecomment-300706099
 
-[See in context](./src/router.js#L351-L368)
+[See in context](./src/router.js#L354-L371)
 
 
 
@@ -70,7 +70,7 @@ there are two kinds of requests:
  be parsed and validated into the
  handler itself.
 
-[See in context](./src/router.js#L451-L463)
+[See in context](./src/router.js#L432-L444)
 
 
 

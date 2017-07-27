@@ -4,7 +4,6 @@ const bytes = require('bytes');
 const Stream = require('stream');
 const PassThrough = require('stream').PassThrough;
 const { initializer } = require('knifecycle');
-const SwaggerParser = require('swagger-parser');
 const HTTPError = require('yhttperror');
 const YError = require('yerror');
 const Siso = require('siso').default;
@@ -12,6 +11,10 @@ const Ajv = require('ajv');
 const strictQs = require('strict-qs');
 const firstChunkStream = require('first-chunk-stream');
 const { parse: parseContentType } = require('content-type');
+const {
+  flattenSwagger,
+  getSwaggerOperations,
+} = require('./utils');
 const preferredCharsets = require('negotiator/lib/charset');
 const preferredMediaType = require('negotiator/lib/encoding');
 
@@ -96,7 +99,7 @@ function initHTTPRouter({
     verbose: ENV && DEBUG_NODE_ENVS.includes(ENV.NODE_ENV),
   });
 
-  return _flattenSwagger(API)
+  return flattenSwagger(API)
   .then(_createRouters.bind(null, { HANDLERS, ajv }))
   .then((routers) => {
     let handleFatalError;
@@ -426,28 +429,6 @@ function _explodePath(path, parameters) {
   });
 }
 
-function _flattenSwagger(API) {
-  const parser = new SwaggerParser();
-
-  return parser.dereference(API);
-}
-
-function _getOperations(API) {
-  return Object.keys(API.paths)
-  .reduce((operations, path) =>
-    Object.keys(API.paths[path])
-    .reduce((operations, method) =>
-        operations.concat(Object.assign({}, {
-          path,
-          method,
-        }, API.paths[path][method])),
-      operations
-    ),
-    []
-  );
-}
-
-
 /* Architecture Note #2.1: Request body
 According to the Swagger/OpenAPI specification
 there are two kinds of requests:
@@ -605,7 +586,7 @@ function _createRouters({ HANDLERS, ajv }, API) {
   const routers = {};
 
   return Promise.all(
-    _getOperations(API)
+    getSwaggerOperations(API)
     .map((operation) => {
       const { path, method, operationId, parameters } = operation;
 
