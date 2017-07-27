@@ -187,7 +187,7 @@ function initHTTPTransaction({
         throw new HTTPError(
           504,
           'E_TRANSACTION_TIMEOUT',
-          DEFAULT_TIMEOUT,
+          TIMEOUT,
           id
         );
       }),
