@@ -1,3 +1,18 @@
+<a name="0.1.0"></a>
+# [0.1.0](https://github.com/nfroidure/swagger-http-router/compare/v0.0.3...v0.1.0) (2017-07-27)
+
+
+### Bug Fixes
+
+* **httpTransaction:** Fix the custom timeout setting ([8e21ace](https://github.com/nfroidure/swagger-http-router/commit/8e21ace))
+
+
+### Features
+
+* **Utils:** Allow internal useful functions to be used by this module consumers ([fbcb754](https://github.com/nfroidure/swagger-http-router/commit/fbcb754))
+
+
+
 <a name="0.0.3"></a>
 ## [0.0.3](https://github.com/nfroidure/swagger-http-router/compare/v0.0.2...v0.0.3) (2017-07-12)
 
