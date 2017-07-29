@@ -1,3 +1,13 @@
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/nfroidure/swagger-http-router/compare/v0.1.0...v0.2.0) (2017-07-29)
+
+
+### Features
+
+* **Utils:** Allow validation functions to be reused ([61a3bbc](https://github.com/nfroidure/swagger-http-router/commit/61a3bbc))
+
+
+
 <a name="0.1.0"></a>
 # [0.1.0](https://github.com/nfroidure/swagger-http-router/compare/v0.0.3...v0.1.0) (2017-07-27)
 
