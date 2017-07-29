@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/nfroidure/swagger-http-router#readme",
   "dependencies": {
-    "ajv": "^5.1.5",
+    "ajv": "^5.2.2",
     "body": "^5.1.0",
     "bytes": "^2.5.0",
     "common-services": "0.0.0",
