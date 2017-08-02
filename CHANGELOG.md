@@ -1,3 +1,18 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/nfroidure/swagger-http-router/compare/v0.2.0...v1.0.0) (2017-08-02)
+
+
+### Features
+
+* **Camelcaseify injected header parameters:** For a better API uniformization of handlers ([e6f1b08](https://github.com/nfroidure/swagger-http-router/commit/e6f1b08))
+
+
+### BREAKING CHANGES
+
+* **Camelcaseify injected header parameters:** Breaks previous headers usage
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/nfroidure/swagger-http-router/compare/v0.1.0...v0.2.0) (2017-07-29)
 
