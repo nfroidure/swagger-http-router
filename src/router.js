@@ -250,7 +250,7 @@ function initHTTPRouter({
           const accept = request.headers.accept || '*';
 
           validMediaTypes = preferredMediaType(
-            '*/*' === accept ? '*' : accept,
+            accept.replace(/(^|,)\*\/\*($|,|;)/g, '$1*$2'),
             (operation && operation.produces) || API.produces || []
           );
 

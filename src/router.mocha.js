@@ -282,6 +282,58 @@ describe('initHTTPRouter', () => {
         .then(() => done())
         .catch(done);
       });
+
+      it('should work with a */* accept header', (done) => {
+        handler.returns(Promise.resolve({
+          status: 200,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: {
+            id: 1,
+            name: 'John Doe',
+          },
+        }));
+
+        initHTTPRouter({
+          HANDLERS, API, log, httpTransaction,
+        })
+        .then((httpRouter) => {
+          const req = {
+            method: 'HEAD',
+            url: '/v1/users/1?extended=true',
+            headers: {
+              accept: 'text/html,image/webp,image/apng,*/*;q=0.8',
+            },
+          };
+
+          log.reset();
+
+          return httpRouter.service(req, res);
+        })
+        .then(() => {
+          assert(httpTransaction.calledOnce, 'Transaction initiated.');
+          assert(httpTransactionEnd.calledOnce, 'Transaction ended.');
+          return waitResponse(httpTransactionEnd.args[0][0]);
+        })
+        .then((response) => {
+          assert.deepEqual(response, {
+            headers: {
+              'content-type': 'application/json',
+            },
+            status: 200,
+          });
+          assert.deepEqual(handler.args, [[{
+            userId: 1,
+            extended: true,
+          }, {
+            method: 'head',
+            parts: ['v1', 'users', '1'],
+          }]]);
+        })
+        .then(() => done())
+        .catch(done);
+      });
     });
 
     describe('GET', () => {
