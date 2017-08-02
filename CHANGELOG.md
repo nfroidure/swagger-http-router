@@ -1,3 +1,13 @@
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/nfroidure/swagger-http-router/compare/v1.0.0...v1.0.1) (2017-08-02)
+
+
+### Bug Fixes
+
+* **Router:** Support */* in the accept header ([17ff11c](https://github.com/nfroidure/swagger-http-router/commit/17ff11c)), closes [#1](https://github.com/nfroidure/swagger-http-router/issues/1)
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/nfroidure/swagger-http-router/compare/v0.2.0...v1.0.0) (2017-08-02)
 
