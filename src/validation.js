@@ -1,10 +1,12 @@
 'use strict';
 
+const camelCase = require('camel-case');
 const HTTPError = require('yhttperror');
 
 module.exports = {
   applyValidators,
   prepareValidators,
+  filterHeaders,
 };
 
 /* Architecture Note #2.1: Validators
@@ -28,7 +30,12 @@ Also, looking closely to Prepack that
 
 function applyValidators(operation, validators, parameters) {
   (operation.parameters || []).forEach(
-    ({ name }) => validators[name](parameters[name])
+    ({ name, in: isIn }) => {
+      if('header' === isIn) {
+        return validators[name](parameters[camelCase(name)]);
+      }
+      return validators[name](parameters[name]);
+    }
   );
 }
 
@@ -69,4 +76,16 @@ function _validateParameter(parameter, validator, value) {
       validator.errors
     );
   }
+}
+
+function filterHeaders(parameters, headers) {
+  return (parameters || [])
+    .filter(parameter => 'header' === parameter.in)
+    .reduce((filteredHeaders, parameter) => {
+      if(headers[parameter.name.toLowerCase()]) {
+        filteredHeaders[camelCase(parameter.name)] =
+          headers[parameter.name.toLowerCase()];
+      }
+      return filteredHeaders;
+    }, {});
 }

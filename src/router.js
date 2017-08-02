@@ -18,6 +18,7 @@ const {
 const {
   prepareValidators,
   applyValidators,
+  filterHeaders,
 } = require('./validation');
 const preferredCharsets = require('negotiator/lib/charset');
 const preferredMediaType = require('negotiator/lib/encoding');
@@ -223,7 +224,7 @@ function initHTTPRouter({
             body ? { body } : {},
             pathParameters,
             strictQs(operation.parameters, search),
-            _filterHeaders(operation.parameters, request.headers)
+            filterHeaders(operation.parameters, request.headers)
           ))
           .then((parameters) => {
             applyValidators(operation, validators, parameters);
@@ -554,17 +555,4 @@ function _createRouters({ HANDLERS, ajv }, API) {
     })
   )
   .then(() => routers);
-}
-
-function _filterHeaders(parameters, headers) {
-
-  return (parameters || [])
-    .filter(parameter => 'header' === parameter.in)
-    .reduce((filteredHeaders, parameter) => {
-      if(headers[parameter.name.toLowerCase()]) {
-        filteredHeaders[parameter.name.toLowerCase()] =
-          headers[parameter.name.toLowerCase()];
-      }
-      return filteredHeaders;
-    }, {});
 }

@@ -181,6 +181,16 @@
           "schema": {
             "$ref": "#/definitions/User"
           }
+        }, {
+          "in": "header",
+          "name": "Authorization",
+          "type": "string",
+          "required": true
+        }, {
+          "in": "header",
+          "name": "Content-Type",
+          "type": "string",
+          "required": true
         }],
         "responses": {
           "200": {

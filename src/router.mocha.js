@@ -850,6 +850,7 @@ describe('initHTTPRouter', () => {
           req.headers = {
             'content-type': 'application/json',
             'content-length': '22',
+            authorization: 'Bearer x',
           };
 
           log.reset();
@@ -877,6 +878,8 @@ describe('initHTTPRouter', () => {
             body: {
               name: 'John Doe',
             },
+            authorization: 'Bearer x',
+            contentType: 'application/json',
           }, {
             method: 'put',
             parts: ['v1', 'users', '1'],
