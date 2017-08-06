@@ -20,7 +20,7 @@ It is very opiniated and clearly diverges from the
 Here, the single source of truth is your API
  definition. No documentation, no route.
 
-[See in context](./src/router.js#L39-L50)
+[See in context](./src/router.js#L52-L63)
 
 
 
@@ -47,7 +47,7 @@ there are two kinds of requests:
  be parsed and validated into the
  handler itself.
 
-[See in context](./src/router.js#L381-L393)
+[See in context](./src/body.js#L13-L25)
 
 
 
@@ -82,7 +82,7 @@ The `httpTransaction` service create a new transaction
  idle requests via a configurable timeout.
 
 It is also a convenient abstraction of the actual
- request/response as between the router and
+ request/response between the router and
  the NodeJS world. A common need is to fake the
  HTTP method for backward compatibility with old
  browsers/proxies by using the
@@ -177,5 +177,5 @@ The transaction can till error at that time but it
  Once terminated, the transaction is removed
   from the `TRANSACTIONS` hash.
 
-[See in context](./src/transaction.js#L226-L240)
+[See in context](./src/transaction.js#L225-L239)
 

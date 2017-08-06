@@ -18,7 +18,7 @@ The `httpTransaction` service create a new transaction
  idle requests via a configurable timeout.
 
 It is also a convenient abstraction of the actual
- request/response as between the router and
+ request/response between the router and
  the NodeJS world. A common need is to fake the
  HTTP method for backward compatibility with old
  browsers/proxies by using the
@@ -202,7 +202,6 @@ function initHTTPTransaction({
      occurs.
     */
     err = HTTPError.cast(err);
-
     log('error', 'An error occured', {
       guruMeditation: id,
       request: TRANSACTIONS[id].protocol +

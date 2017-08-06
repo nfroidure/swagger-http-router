@@ -192,7 +192,7 @@ describe('initHTTPRouter', () => {
         handler.returns(Promise.resolve({
           status: 200,
           headers: {
-            'content-type': 'application/json',
+            'content-type': 'image/jpeg',
           },
         }));
 
@@ -222,12 +222,10 @@ describe('initHTTPRouter', () => {
             },
             status: 200,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
-          }, {
-            method: 'head',
-            parts: ['v1', 'users', '1', 'avatar'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -271,13 +269,11 @@ describe('initHTTPRouter', () => {
             },
             status: 200,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'head',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -323,13 +319,11 @@ describe('initHTTPRouter', () => {
             },
             status: 200,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'head',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -379,13 +373,11 @@ describe('initHTTPRouter', () => {
             },
             status: 200,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -427,12 +419,10 @@ describe('initHTTPRouter', () => {
             },
             status: 200,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1', 'avatar'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -488,13 +478,11 @@ describe('initHTTPRouter', () => {
             },
             status: 500,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -544,13 +532,11 @@ describe('initHTTPRouter', () => {
             },
             status: 406,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -591,13 +577,11 @@ describe('initHTTPRouter', () => {
             },
             status: 500,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -638,13 +622,11 @@ describe('initHTTPRouter', () => {
             },
             status: 500,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -685,13 +667,11 @@ describe('initHTTPRouter', () => {
             },
             status: 500,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -820,13 +800,11 @@ describe('initHTTPRouter', () => {
               },
             },
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             extended: true,
-          }, {
-            method: 'get',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -925,17 +903,15 @@ describe('initHTTPRouter', () => {
             },
             status: 201,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
             body: {
               name: 'John Doe',
             },
             authorization: 'Bearer x',
             contentType: 'application/json',
-          }, {
-            method: 'put',
-            parts: ['v1', 'users', '1'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
@@ -1410,25 +1386,25 @@ describe('initHTTPRouter', () => {
         .catch(done);
       });
 
-      it('should fail whit unsupported charset', (done) => {
-        handler.returns(Promise.reject(
-          new Error('E_NOT_SUPPOSED_TO_BE_HERE')
-        ));
+      it('should fail with unsupported charset', (done) => {
+        handler.returns(Promise.resolve({
+          status: 200,
+          body: {
+            name: 'John Doe',
+          },
+        }));
 
         initHTTPRouter({
           HANDLERS, API, log, httpTransaction,
         })
         .then((httpRouter) => {
-          const req = StreamTest.v2.fromChunks([
-            '{ ', '"nam', 'e": "John', ' Doe" }',
-          ]);
+          const req = StreamTest.v2.fromChunks([]);
 
-          req.method = 'PUT';
-          req.url = '/v1/users/1';
+          req.method = 'GET';
+          req.url = '/v1/users/1?extended=false';
           req.headers = {
+            authorization: 'Bearer teddy',
             'accept-charset': 'UTF-32;q=0.9, ISO-8859-1;q=0.8, UTF-16;q=0.7',
-            'content-type': 'application/vnd.github+json',
-            'content-length': '22',
           };
 
           log.reset();
@@ -1453,7 +1429,11 @@ describe('initHTTPRouter', () => {
               },
             },
           });
-          assert.deepEqual(handler.args, [], 'Handler not executed.');
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
+            userId: 1,
+            extended: false,
+          });
         })
         .then(() => done())
         .catch(done);
@@ -1537,12 +1517,11 @@ describe('initHTTPRouter', () => {
             headers: {},
             status: 410,
           });
-          assert.deepEqual(handler.args, [[{
+          assert.equal(handler.args.length, 1);
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
             userId: 1,
-          }, {
-            method: 'delete',
-            parts: ['v1', 'users', '1', 'avatar'],
-          }]]);
+          });
         })
         .then(() => done())
         .catch(done);
