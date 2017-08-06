@@ -291,6 +291,15 @@ The above usage section shows you a very basic
 <dt><a href="#initHTTPTransaction">initHTTPTransaction(services)</a> ⇒ <code>Promise.&lt;function()&gt;</code></dt>
 <dd><p>Instantiate the httpTransaction service</p>
 </dd>
+<dt><a href="#flattenSwagger">flattenSwagger(API)</a> ⇒ <code>Object</code></dt>
+<dd><p>Flatten the inputed Swagger file
+ object</p>
+</dd>
+<dt><a href="#getSwaggerOperations">getSwaggerOperations(API)</a> ⇒ <code>Array</code></dt>
+<dd><p>Return a Swagger operation in a more
+ convenient way to iterate onto its
+ operations</p>
+</dd>
 </dl>
 
 <a name="initWepApplication"></a>
@@ -399,6 +408,42 @@ transaction created in an array.
 | req | <code>HTTPRequest</code> | A raw NodeJS HTTP incoming message |
 | res | <code>HTTPResponse</code> | A raw NodeJS HTTP response |
 
+<a name="flattenSwagger"></a>
+
+## flattenSwagger(API) ⇒ <code>Object</code>
+Flatten the inputed Swagger file
+ object
+
+**Kind**: global function  
+**Returns**: <code>Object</code> - The flattened Swagger definition  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| API | <code>Object</code> | An Object containing a parser Swagger JSON |
+
+<a name="getSwaggerOperations"></a>
+
+## getSwaggerOperations(API) ⇒ <code>Array</code>
+Return a Swagger operation in a more
+ convenient way to iterate onto its
+ operations
+
+**Kind**: global function  
+**Returns**: <code>Array</code> - An array of all the Swagger operations  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| API | <code>Object</code> | The flattened Swagger defition |
+
+**Example**  
+```js
+getSwaggerOperations(API)
+.map((operation) => {
+   const { path, method, operationId, parameters } = operation;
+
+  // Do something with that operation
+});
+```
 
 # License
 [MIT](https://github.com/nfroidure/swagger-http-router/blob/master/LICENSE)
