@@ -810,6 +810,59 @@ describe('initHTTPRouter', () => {
         .catch(done);
       });
 
+      it('should proxy error headers', (done) => {
+        const handlerError = new HTTPError(501, 'E_UNAUTHORIZED');
+
+        handlerError.headers = {
+          'X-Test': 'Error header',
+        };
+        handler.returns(Promise.reject(
+          handlerError
+        ));
+
+        initHTTPRouter({
+          HANDLERS, API, log, httpTransaction,
+        })
+        .then((httpRouter) => {
+          const req = {
+            method: 'GET',
+            url: '/v1/users/1?extended=true',
+            headers: {},
+          };
+
+          log.reset();
+
+          return httpRouter.service(req, res);
+        })
+        .then(() => {
+          assert(httpTransaction.calledOnce, 'Transaction initiated.');
+          assert(httpTransactionEnd.calledOnce, 'Transaction ended.');
+          return waitResponse(httpTransactionEnd.args[0][0]);
+        })
+        .then((response) => {
+          assert.deepEqual(response, {
+            status: 501,
+            headers: {
+              'content-type': 'application/json',
+              'cache-control': 'private',
+              'X-Test': 'Error header',
+            },
+            body: {
+              error: {
+                code: 'E_UNAUTHORIZED',
+              },
+            },
+          });
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
+            userId: 1,
+            extended: true,
+          });
+        })
+        .then(() => done())
+        .catch(done);
+      });
+
       it('should work with an unexisting route', (done) => {
         handler.returns(Promise.reject(
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')

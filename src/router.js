@@ -259,18 +259,22 @@ function initHTTPRouter({
           const response = {};
 
           response.status = err.httpCode || 500;
-          response.headers = {
-            // Avoid caching errors
-            'cache-control': 'private',
-            // Fallback to the default stringifyer to always be
-            // able to display errors
-            'content-type':
-              responseSpec &&
-              responseSpec.contentTypes[0] &&
-              STRINGIFYERS[responseSpec.contentTypes[0]] ?
-              responseSpec.contentTypes[0] :
-              Object.keys(STRINGIFYERS)[0],
-          };
+          response.headers = Object.assign(
+            {},
+            err.headers || {},
+            {
+              // Avoid caching errors
+              'cache-control': 'private',
+              // Fallback to the default stringifyer to always be
+              // able to display errors
+              'content-type':
+                responseSpec &&
+                responseSpec.contentTypes[0] &&
+                STRINGIFYERS[responseSpec.contentTypes[0]] ?
+                responseSpec.contentTypes[0] :
+                Object.keys(STRINGIFYERS)[0],
+            }
+          );
 
           response.body = {
             error: {
