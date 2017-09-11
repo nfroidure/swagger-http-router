@@ -1,3 +1,13 @@
+<a name="1.2.1"></a>
+## [1.2.1](https://github.com/nfroidure/swagger-http-router/compare/v1.2.0...v1.2.1) (2017-09-11)
+
+
+### Bug Fixes
+
+* **Router:** Take in count user agents that sends charsets capitalized ([86d719f](https://github.com/nfroidure/swagger-http-router/commit/86d719f))
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/nfroidure/swagger-http-router/compare/v1.1.0...v1.2.0) (2017-09-11)
 
