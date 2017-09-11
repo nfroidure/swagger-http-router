@@ -1,3 +1,13 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/nfroidure/swagger-http-router/compare/v1.1.0...v1.2.0) (2017-09-11)
+
+
+### Features
+
+* **Router:** Add a way to set headers for errors ([a84ff5a](https://github.com/nfroidure/swagger-http-router/commit/a84ff5a))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/nfroidure/swagger-http-router/compare/v1.0.1...v1.1.0) (2017-08-06)
 
