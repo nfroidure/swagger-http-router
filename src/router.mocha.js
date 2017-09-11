@@ -1439,6 +1439,68 @@ describe('initHTTPRouter', () => {
         .catch(done);
       });
 
+      it('should work with a capitalized charset', (done) => {
+        handler.returns(Promise.resolve({
+          status: 201,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: {
+            id: 1,
+            name: 'John Doe',
+          },
+        }));
+
+        initHTTPRouter({
+          HANDLERS, API, log, httpTransaction,
+        })
+        .then((httpRouter) => {
+          const req = StreamTest.v2.fromChunks([
+            '{ ', '"nam', 'e": "John', ' Doe" }',
+          ]);
+
+          req.method = 'PUT';
+          req.url = '/v1/users/1';
+          req.headers = {
+            'content-type': 'application/json;charset=UTF-8',
+            'content-length': '22',
+            authorization: 'Bearer x',
+          };
+
+          log.reset();
+
+          return httpRouter.service(req, res);
+        })
+        .then(() => {
+          assert(httpTransaction.calledOnce, 'Transaction initiated.');
+          assert(httpTransactionEnd.calledOnce, 'Transaction ended.');
+          return waitResponse(httpTransactionEnd.args[0][0]);
+        })
+        .then((response) => {
+          assert.deepEqual(response, {
+            body: {
+              id: 1,
+              name: 'John Doe',
+            },
+            headers: {
+              'content-type': 'application/json',
+            },
+            status: 201,
+          });
+          assert.equal(handler.args.length, 1);
+          assert.deepEqual(handler.args[0][0], {
+            userId: 1,
+            body: {
+              name: 'John Doe',
+            },
+            authorization: 'Bearer x',
+            contentType: 'application/json;charset=UTF-8',
+          });
+        })
+        .then(() => done())
+        .catch(done);
+      });
+
       it('should fail with unsupported charset', (done) => {
         handler.returns(Promise.resolve({
           status: 200,

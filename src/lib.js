@@ -37,7 +37,7 @@ function extractBodySpec(
         parsedContentType.parameters &&
         parsedContentType.parameters.charset
       ) {
-        bodySpec.charset = parsedContentType.parameters.charset;
+        bodySpec.charset = parsedContentType.parameters.charset.toLowerCase();
       }
     } catch (err) {
       throw new HTTPError(400, 'E_BAD_CONTENT_TYPE');
