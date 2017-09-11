@@ -103,6 +103,7 @@ describe('initWepApplication', () => {
         return new Promise((resolve, reject) => {
           supertest(`http://${ENV.HOST}:${ENV.PORT}`)
           .get('/v1/users/1?extended=false')
+          .unset('User-Agent')
           .expect(200)
           .end((err, res) => {
             if(err) {
@@ -141,7 +142,7 @@ describe('initWepApplication', () => {
           ], [
             'info',
             {
-              endInBytes: 151,
+              endInBytes: 116,
               endOutBytes: 191,
               endTime: 1337,
               id: '0',
@@ -152,12 +153,11 @@ describe('initWepApplication', () => {
                 'accept-encoding': 'gzip, deflate',
                 connection: 'close',
                 host: 'localhost:1664',
-                'user-agent': 'node-superagent/3.5.2',
               },
               resHeaders: {
                 'content-type': 'application/json',
               },
-              startInBytes: 151,
+              startInBytes: 116,
               startOutBytes: 0,
               startTime: 1337,
               statusCode: 200,

@@ -81,6 +81,7 @@ HTTP server closed
       .then(() => new Promise((resolve, reject) => {
         supertest('http://127.0.0.1:1337')
         .post('/v1/shutdown')
+        .unset('User-Agent')
         .expect(200)
         .end((err, res) => {
           if(err) {
@@ -97,7 +98,7 @@ HTTP server closed
 On air 🚀🌕
 { protocol: 'http',
   ip: '127.0.0.1',
-  startInBytes: 157,
+  startInBytes: 122,
   startOutBytes: 0,
   startTime: 1267833600000,
   url: '/v1/shutdown',
@@ -105,13 +106,12 @@ On air 🚀🌕
   reqHeaders: 
    { host: '127.0.0.1:1337',
      'accept-encoding': 'gzip, deflate',
-     'user-agent': 'node-superagent/3.5.2',
      connection: 'close',
      'content-length': '0' },
   errored: false,
   id: '0',
   endTime: 1267833600000,
-  endInBytes: 157,
+  endInBytes: 122,
   endOutBytes: 127,
   statusCode: 200,
   resHeaders: {} }
