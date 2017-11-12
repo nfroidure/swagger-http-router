@@ -1,14 +1,19 @@
 'use strict';
 
 const PassThrough = require('stream').PassThrough;
+const qs = require('qs');
 
 const DEFAULT_DEBUG_NODE_ENVS = ['test', 'development'];
 const DEFAULT_BUFFER_LIMIT = '500kB';
 const DEFAULT_PARSERS = {
   'application/json': JSON.parse.bind(JSON),
+  'text/plain': identity,
+  'application/x-www-form-urlencoded': qs.parse.bind(qs),
 };
 const DEFAULT_STRINGIFYERS = {
   'application/json': JSON.stringify.bind(JSON),
+  'text/plain': ensureString,
+  'application/x-www-form-urlencoded': qs.stringify.bind(qs),
 };
 const DEFAULT_DECODERS = {
   'utf-8': PassThrough,
@@ -16,6 +21,18 @@ const DEFAULT_DECODERS = {
 const DEFAULT_ENCODERS = {
   'utf-8': PassThrough,
 };
+
+function ensureString(str) {
+  return 'undefined' === typeof str ?
+  '' :
+  'string' === typeof str ?
+  str :
+  JSON.stringify(str);
+}
+
+function identity(me) {
+  return me;
+}
 
 module.exports = {
   DEFAULT_DEBUG_NODE_ENVS,
