@@ -20,7 +20,7 @@ It is very opiniated and clearly diverges from the
 Here, the single source of truth is your API
  definition. No documentation, no route.
 
-[See in context](./src/router.js#L52-L63)
+[See in context](./src/router.js#L46-L57)
 
 
 

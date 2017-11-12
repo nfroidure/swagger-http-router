@@ -12,11 +12,13 @@ const {
 const initHTTPRouter = require('./router');
 const initHTTPTransaction = require('./transaction');
 const initHTTPServer = require('./server');
+const initErrorHandler = require('./errorHandler');
 
 module.exports = {
   initHTTPRouter,
   initHTTPTransaction,
   initHTTPServer,
+  initErrorHandler,
   initWepApplication,
   registerHandlers,
 };
@@ -44,6 +46,7 @@ function initWepApplication(API, HANDLERS, $ = getInstance()) {
     initProcessService,
     initHTTPRouter,
     initHTTPTransaction,
+    initErrorHandler,
     initHTTPServer,
   ].forEach($.register.bind($));
 

@@ -8,6 +8,7 @@ const HTTPError = require('yhttperror');
 const YError = require('yerror');
 const API = require('../fixtures/swagger.api.json');
 const initHTTPRouter = require('./router');
+const initErrorHandler = require('./errorHandler');
 
 function waitResponse(response, raw) {
   return new Promise((resolve, reject) => {
@@ -70,9 +71,10 @@ describe('initHTTPRouter', () => {
   });
 
   it('should work', (done) => {
-    initHTTPRouter({
-      HANDLERS, API, log, httpTransaction,
-    })
+    initErrorHandler({})
+    .then(errorHandler => initHTTPRouter({
+      HANDLERS, API, log, httpTransaction, errorHandler,
+    }))
     .then((httpRouter) => {
       assert('function' === typeof httpRouter.service);
       assert(httpRouter.fatalErrorPromise.promise instanceof Promise);
@@ -85,7 +87,8 @@ describe('initHTTPRouter', () => {
   });
 
   it('should fail when operation id is lacking', (done) => {
-    initHTTPRouter({
+    initErrorHandler({})
+    .then(errorHandler => initHTTPRouter({
       HANDLERS,
       API: {
         host: API.host,
@@ -101,7 +104,8 @@ describe('initHTTPRouter', () => {
       },
       log,
       httpTransaction,
-    })
+      errorHandler,
+    }))
     .then(() => {
       throw new YError('E_UNEXPECTED_SUCCESS');
     })
@@ -113,7 +117,8 @@ describe('initHTTPRouter', () => {
   });
 
   it('should fail when operation path is bad', (done) => {
-    initHTTPRouter({
+    initErrorHandler({})
+    .then(errorHandler => initHTTPRouter({
       HANDLERS,
       API: {
         host: API.host,
@@ -129,7 +134,8 @@ describe('initHTTPRouter', () => {
       },
       log,
       httpTransaction,
-    })
+      errorHandler,
+    }))
     .then(() => {
       throw new YError('E_UNEXPECTED_SUCCESS');
     })
@@ -141,7 +147,8 @@ describe('initHTTPRouter', () => {
   });
 
   it('should fail when a path parameter is lacking', (done) => {
-    initHTTPRouter({
+    initErrorHandler({})
+    .then(errorHandler => initHTTPRouter({
       HANDLERS: {
         lol: handler,
       },
@@ -161,7 +168,8 @@ describe('initHTTPRouter', () => {
       },
       log,
       httpTransaction,
-    })
+      errorHandler,
+    }))
     .then(() => {
       throw new YError('E_UNEXPECTED_SUCCESS');
     })
@@ -173,9 +181,10 @@ describe('initHTTPRouter', () => {
   });
 
   it('should fail when operation handler is lacking', (done) => {
-    initHTTPRouter({
-      HANDLERS: {}, API, log, httpTransaction,
-    })
+    initErrorHandler({})
+    .then(errorHandler => initHTTPRouter({
+      HANDLERS: {}, API, log, httpTransaction, errorHandler,
+    }))
     .then(() => {
       throw new YError('E_UNEXPECTED_SUCCESS');
     })
@@ -196,9 +205,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'HEAD',
@@ -243,9 +253,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'HEAD',
@@ -291,9 +302,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'HEAD',
@@ -343,9 +355,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -392,9 +405,10 @@ describe('initHTTPRouter', () => {
           body: StreamTest.v2.fromChunks(['he', 'llo']),
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -440,7 +454,12 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
+        initErrorHandler({
+          STRINGIFYERS: {
+            'text/plain': JSON.stringify.bind(JSON),
+          },
+        })
+        .then(errorHandler => initHTTPRouter({
           STRINGIFYERS: {
             'text/plain': JSON.stringify.bind(JSON),
           },
@@ -448,7 +467,8 @@ describe('initHTTPRouter', () => {
           API,
           log,
           httpTransaction,
-        })
+          errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -500,7 +520,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({ HANDLERS, API, log, httpTransaction })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -545,9 +568,10 @@ describe('initHTTPRouter', () => {
       it('should fail when the handler returns nothing', (done) => {
         handler.returns();
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -590,9 +614,10 @@ describe('initHTTPRouter', () => {
       it('should fail when the handler returns no response', (done) => {
         handler.returns(Promise.resolve());
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -635,9 +660,10 @@ describe('initHTTPRouter', () => {
       it('should fail when the handler returns no status', (done) => {
         handler.returns(Promise.resolve({}));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -682,9 +708,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -725,9 +752,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -768,9 +796,10 @@ describe('initHTTPRouter', () => {
           new HTTPError(501, 'E_UNAUTHORIZED')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -820,9 +849,10 @@ describe('initHTTPRouter', () => {
           handlerError
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -868,9 +898,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'GET',
@@ -920,9 +951,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', '"nam', 'e": "John', ' Doe" }',
@@ -979,9 +1011,10 @@ describe('initHTTPRouter', () => {
           body: StreamTest.v2.fromChunks(['he', 'llo']),
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks(['he', 'llo']);
 
@@ -1018,9 +1051,10 @@ describe('initHTTPRouter', () => {
       it('should fail with a bad content type header', (done) => {
         handler.returns(Promise.resolve({}));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'PUT',
@@ -1061,9 +1095,10 @@ describe('initHTTPRouter', () => {
       it('should fail with an unsupported content type header', (done) => {
         handler.returns(Promise.resolve({}));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks(['he', 'llo']);
 
@@ -1107,9 +1142,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', '"nat', 'e": "John', ' Doe" }',
@@ -1155,9 +1191,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', '"nam', 'e": "John', ' Doe" }',
@@ -1203,9 +1240,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', '"nam', 'e": "John', ' Doe" }',
@@ -1251,9 +1289,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', 'nam', 'e": "John', ' Doe" }',
@@ -1299,9 +1338,10 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromErroredChunks(
             new Error('E_SHIT_HIT_THE_FAN'),
@@ -1348,9 +1388,15 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, BUFFER_LIMIT: 20, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS,
+          API,
+          BUFFER_LIMIT: 20,
+          log,
+          httpTransaction,
+          errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', '"nam', 'e": "John', ' Doe" }',
@@ -1396,9 +1442,15 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, BUFFER_LIMIT: 20, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS,
+          API,
+          BUFFER_LIMIT: 20,
+          log,
+          httpTransaction,
+          errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', '"nam', 'e": "John', ' Doe" }',
@@ -1451,9 +1503,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([
             '{ ', '"nam', 'e": "John', ' Doe" }',
@@ -1509,9 +1562,10 @@ describe('initHTTPRouter', () => {
           },
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([]);
 
@@ -1559,9 +1613,15 @@ describe('initHTTPRouter', () => {
           new Error('E_NOT_SUPPOSED_TO_BE_HERE')
         ));
 
-        initHTTPRouter({
-          HANDLERS, API, BUFFER_LIMIT: 20, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS,
+          API,
+          BUFFER_LIMIT: 20,
+          log,
+          httpTransaction,
+          errorHandler,
+        }))
         .then((httpRouter) => {
           const req = StreamTest.v2.fromChunks([]);
 
@@ -1608,9 +1668,10 @@ describe('initHTTPRouter', () => {
           headers: {},
         }));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'DELETE',
@@ -1647,9 +1708,10 @@ describe('initHTTPRouter', () => {
       it('should 404', (done) => {
         handler.returns(Promise.reject(new YError('E_NOT_SUPPOSED_TO_BE_HERE')));
 
-        initHTTPRouter({
-          HANDLERS, API, log, httpTransaction,
-        })
+        initErrorHandler({})
+        .then(errorHandler => initHTTPRouter({
+          HANDLERS, API, log, httpTransaction, errorHandler,
+        }))
         .then((httpRouter) => {
           const req = {
             method: 'CUSTOMHEADER',

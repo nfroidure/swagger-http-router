@@ -2,7 +2,6 @@
 
 const bytes = require('bytes');
 const Stream = require('stream');
-const PassThrough = require('stream').PassThrough;
 const { initializer } = require('knifecycle');
 const HTTPError = require('yhttperror');
 const YError = require('yerror');
@@ -31,20 +30,15 @@ const {
 } = require('./body');
 
 const SEARCH_SEPARATOR = '?';
-const DEFAULT_DEBUG_NODE_ENVS = ['test', 'development'];
-const DEFAULT_BUFFER_LIMIT = '500kB';
-const DEFAULT_PARSERS = {
-  'application/json': JSON.parse.bind(JSON),
-};
-const DEFAULT_STRINGIFYERS = {
-  'application/json': JSON.stringify.bind(JSON),
-};
-const DEFAULT_DECODERS = {
-  'utf-8': PassThrough,
-};
-const DEFAULT_ENCODERS = {
-  'utf-8': PassThrough,
-};
+
+const {
+  DEFAULT_DEBUG_NODE_ENVS,
+  DEFAULT_BUFFER_LIMIT,
+  DEFAULT_PARSERS,
+  DEFAULT_STRINGIFYERS,
+  DEFAULT_DECODERS,
+  DEFAULT_ENCODERS,
+} = require('./constants');
 
 function noop() {}
 function identity(x) { return x; }
@@ -68,7 +62,7 @@ module.exports = initializer({
     '?ENV', '?DEBUG_NODE_ENVS', '?BUFFER_LIMIT',
     'HANDLERS', 'API', '?PARSERS', '?STRINGIFYERS',
     '?DECODERS', '?ENCODERS',
-    '?log', 'httpTransaction',
+    '?log', 'httpTransaction', 'errorHandler',
   ],
   options: { singleton: true },
 }, initHTTPRouter);
@@ -113,7 +107,7 @@ function initHTTPRouter({
   STRINGIFYERS = DEFAULT_STRINGIFYERS,
   DECODERS = DEFAULT_DECODERS,
   ENCODERS = DEFAULT_ENCODERS,
-  log = noop, httpTransaction,
+  log = noop, httpTransaction, errorHandler,
 }) {
   const bufferLimit = bytes.parse(BUFFER_LIMIT);
   const ajv = new Ajv({
@@ -255,41 +249,11 @@ function initHTTPRouter({
           });
         }))
         .catch(transaction.catch)
-        .catch((err) => {
-          const response = {};
-
-          response.status = err.httpCode || 500;
-          response.headers = Object.assign(
-            {},
-            err.headers || {},
-            {
-              // Avoid caching errors
-              'cache-control': 'private',
-              // Fallback to the default stringifyer to always be
-              // able to display errors
-              'content-type':
-                responseSpec &&
-                responseSpec.contentTypes[0] &&
-                STRINGIFYERS[responseSpec.contentTypes[0]] ?
-                responseSpec.contentTypes[0] :
-                Object.keys(STRINGIFYERS)[0],
-            }
-          );
-
-          response.body = {
-            error: {
-              code: err.code || 'E_UNEXPECTED',
-              // Enjoy nerdy stuff: https://en.wikipedia.org/wiki/Guru_Meditation
-              guruMeditation: transaction.id,
-            },
-          };
-
-          if(ENV && DEBUG_NODE_ENVS.includes(ENV.NODE_ENV)) {
-            response.body.error.stack = err.stack;
-            response.body.error.params = err.params;
-          }
-          return response;
-        })
+        .catch(errorHandler.bind(
+          null,
+          transaction.id,
+          responseSpec
+        ))
         .then((response) => {
           if(
             response.body &&

@@ -275,6 +275,10 @@ The above usage section shows you a very basic
 ## Functions
 
 <dl>
+<dt><a href="#initErrorHandler">initErrorHandler(services)</a> ⇒ <code>Promise</code></dt>
+<dd><p>Initialize an error handler for the
+HTTP router</p>
+</dd>
 <dt><a href="#initWepApplication">initWepApplication(API, HANDLERS, [$])</a> ⇒ <code>Knifecycle</code></dt>
 <dd><p>Initialize a web application</p>
 </dd>
@@ -301,6 +305,38 @@ The above usage section shows you a very basic
  operations</p>
 </dd>
 </dl>
+
+<a name="initErrorHandler"></a>
+
+## initErrorHandler(services) ⇒ <code>Promise</code>
+Initialize an error handler for the
+HTTP router
+
+**Kind**: global function  
+**Returns**: <code>Promise</code> - A promise of a function to handle errors  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| services | <code>Object</code> | The services the server depends on |
+| [services.ENV] | <code>Object</code> | The services the server depends on |
+| [services.DEBUG_NODE_ENVS] | <code>Array</code> | The environnement that activate debugging  (prints stack trace in HTTP errors responses) |
+| [services.STRINGIFYERS] | <code>Object</code> | The synchronous body stringifyers |
+
+<a name="initErrorHandler..errorHandler"></a>
+
+### initErrorHandler~errorHandler(transactionId, responseSpec, err) ⇒ <code>Promise</code>
+Handle an HTTP transaction error an
+map it to a serializable response
+
+**Kind**: inner method of [<code>initErrorHandler</code>](#initErrorHandler)  
+**Returns**: <code>Promise</code> - A promise resolving when the operation
+ completes  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| transactionId | <code>String</code> | A raw NodeJS HTTP incoming message |
+| responseSpec | <code>Object</code> | The response specification |
+| err | <code>HTTPError</code> | The encountered error |
 
 <a name="initWepApplication"></a>
 
