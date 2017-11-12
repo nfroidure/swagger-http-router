@@ -1,7 +1,14 @@
 {
   "name": "swagger-http-router",
   "version": "1.2.1",
-  "description": "A HTTP router based on your Swagger definition.",
+  "description": "A HTTP router based on your Swagger/OpenAPI definition.",
+  "keywords": [
+    "Swagger",
+    "OpenAPI",
+    "HTTP",
+    "REST",
+    "API"
+  ],
   "main": "src/index.js",
   "metapak": {
     "data": {
