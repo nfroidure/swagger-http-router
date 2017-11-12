@@ -1,3 +1,14 @@
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/nfroidure/swagger-http-router/compare/v1.2.1...v1.3.0) (2017-11-12)
+
+
+### Features
+
+* **errorHandler:** Inject and expose the errorHandler ([5b905a7](https://github.com/nfroidure/swagger-http-router/commit/5b905a7)), closes [#2](https://github.com/nfroidure/swagger-http-router/issues/2)
+* **PARSERS/STRINGIFYERS:** Add `application/x-www-form-urlencoded` support ([8afd402](https://github.com/nfroidure/swagger-http-router/commit/8afd402))
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/nfroidure/swagger-http-router/compare/v1.2.0...v1.2.1) (2017-09-11)
 
