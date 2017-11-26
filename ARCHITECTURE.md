@@ -18,8 +18,8 @@ By relying on the
  to declare a new endpoint, this project forces
  documentation before code.
 
-It also is hughly customizable since based
- on the dependency ijection with inversion of
+It also is highly customizable since based
+ on the dependency injection with inversion of
  control pattern allowing you to override or
  wrap its main constituents.
 
@@ -36,7 +36,7 @@ The HTTP transaction flow is very simple.
 
  Then the router (`httpRouter`) deal with
  that request to test which handler need
- to be run by conparing the method/path
+ to be run by comparing the method/path
  couple with the Swagger/OpenAPI operations
  declarations.
 
