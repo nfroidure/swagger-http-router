@@ -2,9 +2,7 @@
 
 const sinon = require('sinon');
 const { initializer } = require('knifecycle');
-const {
-  initWepApplication,
-} = require('../src');
+const { initWepApplication } = require('../src');
 
 const API = {
   host: 'localhost:1337',
@@ -32,31 +30,33 @@ const API = {
 };
 
 const HANDLERS = {
-  shutdown: initializer({
-    name: 'shutdown',
-    type: 'service',
-    inject: ['$destroy'],
-  }, ({ $destroy }) => Promise.resolve(
-    () => {
-      setImmediate($destroy);
-      return Promise.resolve({
-        status: 200,
-      });
-    }
-  )),
+  shutdown: initializer(
+    {
+      name: 'shutdown',
+      type: 'service',
+      inject: ['$destroy'],
+    },
+    ({ $destroy }) =>
+      Promise.resolve(() => {
+        setImmediate($destroy);
+        return Promise.resolve({
+          status: 200,
+        });
+      })
+  ),
 };
 
 initWepApplication(API, HANDLERS)
-.constant('time', sinon.stub().returns((new Date('2010-03-06')).getTime()))
-.run(['ENV', 'log', 'httpServer', 'process', '$destroy'])
-.then(({ ENV, log, $destroy }) => {
-  log('info', 'On air 🚀🌕');
-  if(ENV.DRY_RUN) {
-    setImmediate($destroy);
-    return;
-  }
-})
-.catch((err) => {
-  console.error('💀 - Cannot launch the process:', err.stack);
-  process.exit(1);
-});
+  .constant('time', sinon.stub().returns(new Date('2010-03-06').getTime()))
+  .run(['ENV', 'log', 'httpServer', 'process', '$destroy'])
+  .then(({ ENV, log, $destroy }) => {
+    log('info', 'On air 🚀🌕');
+    if (ENV.DRY_RUN) {
+      setImmediate($destroy);
+      return;
+    }
+  })
+  .catch(err => {
+    console.error('💀 - Cannot launch the process:', err.stack); // eslint-disable-line
+    process.exit(1);
+  });

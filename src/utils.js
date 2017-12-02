@@ -32,22 +32,28 @@ function flattenSwagger(API) {
  * @example
  * getSwaggerOperations(API)
  * .map((operation) => {
-*    const { path, method, operationId, parameters } = operation;
-*
-*   // Do something with that operation
+ *    const { path, method, operationId, parameters } = operation;
+ *
+ *   // Do something with that operation
  * });
  */
 function getSwaggerOperations(API) {
-  return Object.keys(API.paths)
-  .reduce((operations, path) =>
-    Object.keys(API.paths[path])
-    .reduce((operations, method) =>
-        operations.concat(Object.assign({}, {
-          path,
-          method,
-        }, API.paths[path][method])),
-      operations
-    ),
+  return Object.keys(API.paths).reduce(
+    (operations, path) =>
+      Object.keys(API.paths[path]).reduce(
+        (operations, method) =>
+          operations.concat(
+            Object.assign(
+              {},
+              {
+                path,
+                method,
+              },
+              API.paths[path][method]
+            )
+          ),
+        operations
+      ),
     []
   );
 }

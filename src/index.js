@@ -113,11 +113,17 @@ function initWepApplication(API, HANDLERS, $ = getInstance()) {
 
   registerHandlers($, HANDLERS);
 
-  $.constant('ENV', Object.assign({
-    NODE_ENV: 'development',
-    HOST: API.host.split(':')[0],
-    PORT: API.host.split(':')[1] || 80,
-  }, process.env));
+  $.constant(
+    'ENV',
+    Object.assign(
+      {
+        NODE_ENV: 'development',
+        HOST: API.host.split(':')[0],
+        PORT: API.host.split(':')[1] || 80,
+      },
+      process.env
+    )
+  );
   $.constant('exit', process.exit);
   $.constant('API', API);
   $.constant('logger', {
@@ -140,13 +146,18 @@ function initWepApplication(API, HANDLERS, $ = getInstance()) {
  * @return {void}
  */
 function registerHandlers($, HANDLERS) {
-  Object.keys(HANDLERS).forEach((handlerName) => {
+  Object.keys(HANDLERS).forEach(handlerName => {
     $.register(HANDLERS[handlerName]);
   });
 
-  $.register(initializer({
-    name: 'HANDLERS',
-    type: 'service',
-    inject: Object.keys(HANDLERS),
-  }, handlers => Promise.resolve(handlers)));
+  $.register(
+    initializer(
+      {
+        name: 'HANDLERS',
+        type: 'service',
+        inject: Object.keys(HANDLERS),
+      },
+      handlers => Promise.resolve(handlers)
+    )
+  );
 }

@@ -84,7 +84,7 @@ It is very opiniated and clearly diverges from the
 Here, the single source of truth is your API
  definition. No documentation, no route.
 
-[See in context](./src/router.js#L46-L57)
+[See in context](./src/router.js#L42-L53)
 
 
 
@@ -111,7 +111,7 @@ there are two kinds of requests:
  be parsed and validated into the
  handler itself.
 
-[See in context](./src/body.js#L13-L25)
+[See in context](./src/body.js#L12-L24)
 
 
 
@@ -182,7 +182,7 @@ export const initHTTPTransactionWithMethodOverride =
 }, initHTTPTransaction);
 ```
 
-[See in context](./src/transaction.js#L14-L56)
+[See in context](./src/transaction.js#L16-L58)
 
 
 
@@ -199,7 +199,7 @@ Each transaction has a unique id that is either
  request header. This allows to trace
  transactions end to end with that unique id.
 
-[See in context](./src/transaction.js#L116-L127)
+[See in context](./src/transaction.js#L120-L131)
 
 
 
@@ -210,7 +210,7 @@ Once initiated, the transaction can be started. It
  to the actual response or rejected if the timeout
  is reached.
 
-[See in context](./src/transaction.js#L176-L181)
+[See in context](./src/transaction.js#L189-L194)
 
 
 
@@ -221,7 +221,7 @@ Here we are simply casting and logging errors.
  ending the transaction properly if an error
  occurs.
 
-[See in context](./src/transaction.js#L198-L203)
+[See in context](./src/transaction.js#L204-L209)
 
 
 
@@ -241,5 +241,5 @@ The transaction can till error at that time but it
  Once terminated, the transaction is removed
   from the `TRANSACTIONS` hash.
 
-[See in context](./src/transaction.js#L225-L239)
+[See in context](./src/transaction.js#L231-L245)
 

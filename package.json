@@ -11,29 +11,34 @@
   ],
   "main": "src/index.js",
   "metapak": {
-    "data": {
-      "files": "src/*.js",
-      "testsFiles": "src/*.mocha.js tests/*.mocha.js"
-    },
     "configs": [
+      "readme",
+      "travis",
+      "eslint",
+      "codeclimate",
+      "mocha",
       "jsdocs",
-      "jsarch",
-      "readme"
-    ]
+      "jsarch"
+    ],
+    "data": {
+      "files": "src/*.js tests/*.js",
+      "testsFiles": "src/*.mocha.js tests/*.mocha.js"
+    }
   },
   "scripts": {
-    "architecture": "jsarch src/*.js > ARCHITECTURE.md",
+    "architecture": "jsarch src/*.js tests/*.js > ARCHITECTURE.md",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "cli": "env NODE_ENV=${NODE_ENV:-cli}",
     "cover": "istanbul cover _mocha --report html -- src/*.mocha.js tests/*.mocha.js -R spec -t 5000",
     "coveralls": "istanbul cover _mocha --report lcovonly -- src/*.mocha.js tests/*.mocha.js -R spec -t 5000 && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
     "cz": "env NODE_ENV=${NODE_ENV:-cli} git cz",
-    "doc": "mkdir -p .readme; echo \"# API\" > .readme/API.md; jsdoc2md src/*.js >> .readme/API.md",
-    "lint": "eslint src/*.js",
-    "metapak": "metapak || echo 'Please `npm install --save-dev metapak`' && exit 0",
-    "postinstall": "npm run metapak --silent",
-    "preversion": "npm t && npm run lint",
-    "test": "mocha src/*.mocha.js tests/*.mocha.js",
+    "doc": "mkdir -p .readme; echo \"# API\" > .readme/API.md; jsdoc2md src/*.js tests/*.js >> .readme/API.md",
+    "lint": "eslint src/*.js tests/*.js",
+    "metapak": "metapak",
+    "mocha": "mocha src/*.mocha.js tests/*.mocha.js",
+    "prettier": "prettier --write src/*.js tests/*.js",
+    "preversion": "npm t && npm run lint && npm run metapak -s",
+    "test": "mocha src/*.mocha.js tests/*.mocha.js && npm run mocha",
     "version": "npm run changelog && git add CHANGELOG.md"
   },
   "repository": {
@@ -67,18 +72,19 @@
   },
   "devDependencies": {
     "commitizen": "^2.9.6",
-    "conventional-changelog-cli": "^1.2.0",
-    "coveralls": "2.11.15",
+    "conventional-changelog-cli": "^1.3.5",
+    "coveralls": "^2.13.3",
     "cz-conventional-changelog": "^2.0.0",
-    "eslint": "3.16.0",
-    "eslint-config-simplifield": "4.1.1",
-    "istanbul": "0.4.5",
-    "jsarch": "1.2.1",
-    "jsdoc-to-markdown": "^3.0.0",
-    "metapak": "0.0.20",
-    "metapak-nfroidure": "0.5.2",
-    "mocha": "3.2.0",
-    "mocha-lcov-reporter": "1.3.0",
+    "eslint": "^4.12.1",
+    "eslint-plugin-prettier": "^2.3.1",
+    "istanbul": "^0.4.5",
+    "jsarch": "^1.2.5",
+    "jsdoc-to-markdown": "^3.0.2",
+    "metapak": "^1.0.1",
+    "metapak-nfroidure": "^2.0.2",
+    "mocha": "^3.5.3",
+    "mocha-lcov-reporter": "^1.3.0",
+    "prettier": "^1.8.2",
     "sinon": "^2.1.0",
     "streamtest": "^1.2.2",
     "supertest": "^3.0.0"
@@ -93,18 +99,18 @@
   },
   "greenkeeper": {
     "ignore": [
-      "debug",
-      "eslint",
-      "eslint-config-simplifield",
-      "mocha",
-      "mocha-lcov-reporter",
       "commitizen",
       "cz-conventional-changelog",
+      "conventional-changelog-cli",
+      "eslint",
+      "eslint-config-prettier",
+      "prettier",
+      "mocha",
+      "mocha-lcov-reporter",
       "coveralls",
       "istanbul",
-      "conventional-changelog-cli",
-      "jsarch",
-      "jsdoc-to-markdown"
+      "jsdoc-to-markdown",
+      "jsarch"
     ]
   }
 }

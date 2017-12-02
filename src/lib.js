@@ -15,25 +15,23 @@ module.exports = {
   executeHandler,
 };
 
-function extractBodySpec(
-  request,
-  consumableMediaTypes,
-  consumableCharsets
-) {
+function extractBodySpec(request, consumableMediaTypes, consumableCharsets) {
   const bodySpec = {
     contentType: '',
-    contentLength: request.headers['content-length'] ?
-    Number(request.headers['content-length']) :
-    0,
+    contentLength: request.headers['content-length']
+      ? Number(request.headers['content-length'])
+      : 0,
     charset: 'utf-8',
   };
 
-  if(request.headers['content-type']) {
+  if (request.headers['content-type']) {
     try {
-      const parsedContentType = parseContentType(request.headers['content-type']);
+      const parsedContentType = parseContentType(
+        request.headers['content-type']
+      );
 
       bodySpec.contentType = parsedContentType.type;
-      if(
+      if (
         parsedContentType.parameters &&
         parsedContentType.parameters.charset
       ) {
@@ -51,11 +49,10 @@ function extractBodySpec(
 }
 
 function checkBodyCharset(bodySpec, consumableCharsets) {
-  if(
+  if (
     bodySpec.contentLength &&
     bodySpec.charset &&
-    !consumableCharsets
-      .includes(bodySpec.charset)
+    !consumableCharsets.includes(bodySpec.charset)
   ) {
     throw new HTTPError(
       406,
@@ -67,11 +64,10 @@ function checkBodyCharset(bodySpec, consumableCharsets) {
 }
 
 function checkBodyMediaType(bodySpec, consumableMediaTypes) {
-  if(
+  if (
     bodySpec.contentLength &&
     bodySpec.contentType &&
-    !consumableMediaTypes
-      .includes(bodySpec.contentType)
+    !consumableMediaTypes.includes(bodySpec.contentType)
   ) {
     throw new HTTPError(
       415,
@@ -82,15 +78,17 @@ function checkBodyMediaType(bodySpec, consumableMediaTypes) {
   }
 }
 
-function extractResponseSpec(operation, request, supportedMediaTypes, supportedCharsets) {
+function extractResponseSpec(
+  operation,
+  request,
+  supportedMediaTypes,
+  supportedCharsets
+) {
   const accept = request.headers.accept || '*';
   const responseSpec = {
-    charsets: request.headers['accept-charset'] ?
-      preferredCharsets(
-        request.headers['accept-charset'],
-        supportedCharsets
-      ) :
-      supportedCharsets,
+    charsets: request.headers['accept-charset']
+      ? preferredCharsets(request.headers['accept-charset'], supportedCharsets)
+      : supportedCharsets,
     contentTypes: preferredMediaType(
       accept.replace(/(^|,)\*\/\*($|,|;)/g, '$1*$2'),
       supportedMediaTypes
@@ -101,7 +99,7 @@ function extractResponseSpec(operation, request, supportedMediaTypes, supportedC
 }
 
 function checkResponseMediaType(request, responseSpec, produceableMediaTypes) {
-  if(0 === responseSpec.contentTypes.length) {
+  if (0 === responseSpec.contentTypes.length) {
     throw new HTTPError(
       406,
       'E_UNACCEPTABLE_MEDIA_TYPE',
@@ -112,7 +110,7 @@ function checkResponseMediaType(request, responseSpec, produceableMediaTypes) {
 }
 
 function checkResponseCharset(request, responseSpec, produceableCharsets) {
-  if(0 === responseSpec.charsets.length) {
+  if (0 === responseSpec.charsets.length) {
     throw new HTTPError(
       406,
       'E_UNACCEPTABLE_CHARSET',
@@ -126,7 +124,7 @@ function checkResponseCharset(request, responseSpec, produceableCharsets) {
 function executeHandler(operation, handler, parameters) {
   const responsePromise = handler(parameters, operation);
 
-  if(!(responsePromise && responsePromise.then)) {
+  if (!(responsePromise && responsePromise.then)) {
     throw new HTTPError(
       500,
       'E_NO_RESPONSE_PROMISE',
@@ -135,12 +133,11 @@ function executeHandler(operation, handler, parameters) {
       operation.path
     );
   }
-  return responsePromise
-  .then((response) => {
-    if(!response) {
+  return responsePromise.then(response => {
+    if (!response) {
       throw new HTTPError(500, 'E_NO_RESPONSE');
     }
-    if('number' !== typeof response.status) {
+    if ('number' !== typeof response.status) {
       throw new HTTPError(500, 'E_NO_RESPONSE_STATUS');
     }
 

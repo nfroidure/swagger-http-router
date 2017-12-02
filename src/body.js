@@ -4,7 +4,6 @@ const HTTPError = require('yhttperror');
 const firstChunkStream = require('first-chunk-stream');
 const Stream = require('stream');
 
-
 module.exports = {
   getBody,
   sendBody,
@@ -23,61 +22,67 @@ there are two kinds of requests:
  be parsed and validated into the
  handler itself.
 */
-function getBody({
-  DECODERS, PARSERS, bufferLimit,
-}, operation, inputStream, bodySpec) {
-  const bodyParameter = (operation.parameters || [])
-  .find(parameter => 'body' === parameter.in);
-  const bodyIsEmpty = !(
-    bodySpec.contentType &&
-    bodySpec.contentLength
+function getBody(
+  { DECODERS, PARSERS, bufferLimit },
+  operation,
+  inputStream,
+  bodySpec
+) {
+  const bodyParameter = (operation.parameters || []).find(
+    parameter => 'body' === parameter.in
   );
-  const bodyIsParseable = !(
-    bodyParameter &&
-    bodyParameter.schema
-  );
+  const bodyIsEmpty = !(bodySpec.contentType && bodySpec.contentLength);
+  const bodyIsParseable = !(bodyParameter && bodyParameter.schema);
 
-  if(bodyIsEmpty) {
+  if (bodyIsEmpty) {
     return Promise.resolve();
   }
 
-  if(bodyIsParseable) {
+  if (bodyIsParseable) {
     return Promise.resolve(inputStream);
   }
-  if(!PARSERS[bodySpec.contentType]) {
-    return Promise.reject(new HTTPError(
-      500, 'E_PARSER_LACK', bodySpec.contentType
-    ));
+  if (!PARSERS[bodySpec.contentType]) {
+    return Promise.reject(
+      new HTTPError(500, 'E_PARSER_LACK', bodySpec.contentType)
+    );
   }
   return new Promise((resolve, reject) => {
     const Decoder = DECODERS[bodySpec.charset];
 
-    inputStream.on('error', (err) => {
+    inputStream.on('error', err => {
       reject(HTTPError.wrap(err, 400, 'E_REQUEST_FAILURE'));
     });
-    inputStream
-    .pipe(new Decoder())
-    .pipe(firstChunkStream({
-      chunkLength: bufferLimit + 1,
-    }, (err, chunk, enc, cb) => {
-      if(err) {
-        reject(HTTPError.wrap(err, 400, 'E_REQUEST_FAILURE'));
-        return;
-      }
-      if(bufferLimit >= chunk.length) {
-        resolve(chunk);
-        return;
-      }
-      reject(new HTTPError(
+    inputStream.pipe(new Decoder()).pipe(
+      firstChunkStream(
+        {
+          chunkLength: bufferLimit + 1,
+        },
+        (err, chunk, enc, cb) => {
+          if (err) {
+            reject(HTTPError.wrap(err, 400, 'E_REQUEST_FAILURE'));
+            cb();
+            return;
+          }
+          if (bufferLimit >= chunk.length) {
+            resolve(chunk);
+            cb();
+            return;
+          }
+          reject(
+            new HTTPError(400, 'E_REQUEST_CONTENT_TOO_LARGE', chunk.length)
+          );
+          cb();
+        }
+      )
+    );
+  }).then(body => {
+    if (body.length !== bodySpec.contentLength) {
+      throw new HTTPError(
         400,
-        'E_REQUEST_CONTENT_TOO_LARGE',
-        chunk.length
-      ));
-    }));
-  })
-  .then((body) => {
-    if(body.length !== bodySpec.contentLength) {
-      throw new HTTPError(400, 'E_BAD_BODY_LENGTH', body.length, bodySpec.contentLength);
+        'E_BAD_BODY_LENGTH',
+        body.length,
+        bodySpec.contentLength
+      );
     }
     try {
       return PARSERS[bodySpec.contentType](body.toString());
@@ -87,43 +92,45 @@ function getBody({
   });
 }
 
-function sendBody({
-  DEBUG_NODE_ENVS, ENV, API, ENCODERS,
-  STRINGIFYERS, log, ajv,
-}, operation, response) {
-  const schema = ((
-      operation &&
+function sendBody(
+  { DEBUG_NODE_ENVS, ENV, API, ENCODERS, STRINGIFYERS, log, ajv },
+  operation,
+  response
+) {
+  const schema =
+    (operation &&
       operation.responses &&
       operation.responses[response.status] &&
-      operation.responses[response.status].schema
-    ) || (
-      // Here we are diverging from the Swagger specs
-      // since global responses object aren't intended
-      // to set global responses but for routes that
-      // does not exists or that has not been resolved
-      // by the router at the time an error were throwed
-      // we simply cannot rely on the `operation`'s value.
-      // See: https://github.com/OAI/OpenAPI-Specification/issues/563
-      API.responses &&
+      operation.responses[response.status].schema) ||
+    // Here we are diverging from the Swagger specs
+    // since global responses object aren't intended
+    // to set global responses but for routes that
+    // does not exists or that has not been resolved
+    // by the router at the time an error were throwed
+    // we simply cannot rely on the `operation`'s value.
+    // See: https://github.com/OAI/OpenAPI-Specification/issues/563
+    (API.responses &&
       API.responses[response.status] &&
-      API.responses[response.status].schema
-    )
-  );
+      API.responses[response.status].schema);
 
-  if(!response.body) {
-    if(schema) {
-      log('warning', `Declared a schema in the ${
-        operation.id
-      } response but found no body.`);
+  if (!response.body) {
+    if (schema) {
+      log(
+        'warning',
+        `Declared a schema in the ${operation.id} response but found no body.`
+      );
     }
     return response;
   }
 
-  if(response.body instanceof Stream) {
-    if(schema) {
-      log('warning', `Declared a schema in the ${
-        operation.id
-      } response but returned a streamed body.`);
+  if (response.body instanceof Stream) {
+    if (schema) {
+      log(
+        'warning',
+        `Declared a schema in the ${
+          operation.id
+        } response but returned a streamed body.`
+      );
     }
     return response;
   }
@@ -131,11 +138,11 @@ function sendBody({
   const Encoder = ENCODERS['utf-8'];
   const stream = new Encoder();
 
-  if(schema) {
-    if(DEBUG_NODE_ENVS.includes(ENV.NODE_ENV)) {
+  if (schema) {
+    if (DEBUG_NODE_ENVS.includes(ENV.NODE_ENV)) {
       const validator = ajv.compile(schema);
 
-      if(!validator(response.body)) {
+      if (!validator(response.body)) {
         log('warning', 'Invalid response:', validator.errors);
       }
     }
@@ -148,17 +155,16 @@ function sendBody({
     log('warning', 'Undocumented response:', response.status, operation);
   }
 
-  stream.write(STRINGIFYERS[
-    response.headers['content-type']
-  ](response.body));
+  stream.write(STRINGIFYERS[response.headers['content-type']](response.body));
 
   stream.end();
   return Object.assign({}, response, {
-    headers: Object.assign({
-      'content-type': `${
-        response.headers['content-type']
-      }; charset=utf-8`,
-    }, response.headers),
+    headers: Object.assign(
+      {
+        'content-type': `${response.headers['content-type']}; charset=utf-8`,
+      },
+      response.headers
+    ),
     body: stream,
   });
 }

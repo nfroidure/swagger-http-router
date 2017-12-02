@@ -16,17 +16,22 @@ describe('initHTTPServer', () => {
     log.reset();
   });
 
-  it('should work', (done) => {
+  it('should work', done => {
     initHTTPServer({
-      ENV, log, httpRouter,
+      ENV,
+      log,
+      httpRouter,
     })
-    .then((httpServer) => {
-      assert.deepEqual(log.args, [[
-        'info', `HTTP Server listening at "http://${ENV.HOST}:${ENV.PORT}".`,
-      ]]);
-      return httpServer.dispose();
-    })
-    .then(() => done())
-    .catch(done);
+      .then(httpServer => {
+        assert.deepEqual(log.args, [
+          [
+            'info',
+            `HTTP Server listening at "http://${ENV.HOST}:${ENV.PORT}".`,
+          ],
+        ]);
+        return httpServer.dispose();
+      })
+      .then(() => done())
+      .catch(done);
   });
 });

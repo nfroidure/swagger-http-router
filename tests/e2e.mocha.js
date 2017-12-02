@@ -13,12 +13,14 @@ describe('swagger-http-router', () => {
       new Promise((resolve, reject) => {
         exec(
           'node ' + path.join(__dirname, 'dry-run.js'),
-          { env: Object.assign({}, process.env, {
-            NODE_ENV: 'development',
-            DRY_RUN: 1,
-          }) },
+          {
+            env: Object.assign({}, process.env, {
+              NODE_ENV: 'development',
+              DRY_RUN: 1,
+            }),
+          },
           (err, stdout, stderr) => {
-            if(err) {
+            if (err) {
               reject(err);
               return;
             }
@@ -26,14 +28,16 @@ describe('swagger-http-router', () => {
           }
         );
       })
-      .then(({ stdout, stderr }) => {
-        assert.equal(stdout.toString(),
-`HTTP Server listening at "http://localhost:1337".
+        .then(({ stdout, stderr }) => {
+          assert.equal(
+            stdout.toString(),
+            `HTTP Server listening at "http://localhost:1337".
 On air 🚀🌕
 `
-        );
-        assert.equal(stderr.toString(),
-`Logging service initialized.
+          );
+          assert.equal(
+            stderr.toString(),
+            `Logging service initialized.
 Running in "development" environment.
 Process service initialized.
 Time service initialized.
@@ -43,10 +47,10 @@ HTTP Router initialized.
 Closing HTTP server.
 HTTP server closed
 `
-        );
-      })
-      .then(() => done())
-      .catch(done);
+          );
+        })
+        .then(() => done())
+        .catch(done);
     });
   });
 
@@ -54,47 +58,53 @@ HTTP server closed
     it('should work', function(done) {
       this.timeout(5000); // eslint-disable-line
       let resolveServerPromise;
-      const serverPromise = new Promise((resolve) => {
+      const serverPromise = new Promise(resolve => {
         resolveServerPromise = resolve;
       });
       const shutdownPromise = new Promise((resolve, reject) => {
         exec(
           'node ' + path.join(__dirname, 'remote-shutdown.js'),
-          { env: Object.assign({}, process.env, {
-            NODE_ENV: 'development',
-          }) },
+          {
+            env: Object.assign({}, process.env, {
+              NODE_ENV: 'development',
+            }),
+          },
           (err, stdout, stderr) => {
-            if(err) {
+            if (err) {
               reject(err);
               return;
             }
             resolve({ stdout, stderr });
           }
-        ).stdout.on('data', (data) => {
-          if(data.toString().includes('listening')) {
+        ).stdout.on('data', data => {
+          if (data.toString().includes('listening')) {
             resolveServerPromise();
           }
         });
       });
 
       serverPromise
-      .then(() => new Promise((resolve, reject) => {
-        supertest('http://127.0.0.1:1337')
-        .post('/v1/shutdown')
-        .unset('User-Agent')
-        .expect(200)
-        .end((err, res) => {
-          if(err) {
-            done(err);
-            return;
-          }
-          resolve();
-        });
-      }))
-      .then(() => shutdownPromise)
-      .then(({ stdout, stderr }) => {
-        assert.equal(stdout.toString(),
-`HTTP Server listening at "http://localhost:1337".
+        .then(
+          () =>
+            new Promise(resolve => {
+              supertest('http://127.0.0.1:1337')
+                .post('/v1/shutdown')
+                .unset('User-Agent')
+                .expect(200)
+                .end(err => {
+                  if (err) {
+                    done(err);
+                    return;
+                  }
+                  resolve();
+                });
+            })
+        )
+        .then(() => shutdownPromise)
+        .then(({ stdout, stderr }) => {
+          assert.equal(
+            stdout.toString(),
+            `HTTP Server listening at "http://localhost:1337".
 On air 🚀🌕
 { protocol: 'http',
   ip: '127.0.0.1',
@@ -116,9 +126,10 @@ On air 🚀🌕
   statusCode: 200,
   resHeaders: {} }
 `
-        );
-        assert.equal(stderr.toString(),
-`Logging service initialized.
+          );
+          assert.equal(
+            stderr.toString(),
+            `Logging service initialized.
 Running in "development" environment.
 Process service initialized.
 Delay service initialized.
@@ -129,10 +140,10 @@ Cleared a delay
 Closing HTTP server.
 HTTP server closed
 `
-        );
-      })
-      .then(() => done())
-      .catch(done);
+          );
+        })
+        .then(() => done())
+        .catch(done);
     });
   });
 });

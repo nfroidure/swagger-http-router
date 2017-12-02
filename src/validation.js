@@ -29,22 +29,19 @@ Also, looking closely to Prepack that
 */
 
 function applyValidators(operation, validators, parameters) {
-  (operation.parameters || []).forEach(
-    ({ name, in: isIn }) => {
-      if('header' === isIn) {
-        return validators[name](parameters[camelCase(name)]);
-      }
-      return validators[name](parameters[name]);
+  (operation.parameters || []).forEach(({ name, in: isIn }) => {
+    if ('header' === isIn) {
+      return validators[name](parameters[camelCase(name)]);
     }
-  );
+    return validators[name](parameters[name]);
+  });
 }
 
 function prepareValidators(ajv, operation) {
-  return (operation.parameters || [])
-  .reduce((validators, parameter) => {
+  return (operation.parameters || []).reduce((validators, parameter) => {
     let schema;
 
-    if(['query', 'header', 'path'].includes(parameter.in)) {
+    if (['query', 'header', 'path'].includes(parameter.in)) {
       schema = {
         type: parameter.type,
         format: parameter.format,
@@ -63,10 +60,16 @@ function prepareValidators(ajv, operation) {
 }
 
 function _validateParameter(parameter, validator, value) {
-  if(parameter.required && 'undefined' === typeof value) {
-    throw new HTTPError(400, 'E_REQUIRED_PARAMETER', parameter.name, typeof value, value);
+  if (parameter.required && 'undefined' === typeof value) {
+    throw new HTTPError(
+      400,
+      'E_REQUIRED_PARAMETER',
+      parameter.name,
+      typeof value,
+      value
+    );
   }
-  if('undefined' !== typeof value && !validator(value)) {
+  if ('undefined' !== typeof value && !validator(value)) {
     throw new HTTPError(
       400,
       'E_BAD_PARAMETER',
@@ -82,7 +85,7 @@ function filterHeaders(parameters, headers) {
   return (parameters || [])
     .filter(parameter => 'header' === parameter.in)
     .reduce((filteredHeaders, parameter) => {
-      if(headers[parameter.name.toLowerCase()]) {
+      if (headers[parameter.name.toLowerCase()]) {
         filteredHeaders[camelCase(parameter.name)] =
           headers[parameter.name.toLowerCase()];
       }

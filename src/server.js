@@ -10,10 +10,13 @@ The `httpServer` service is responsible for instanciating
  the httpServer and handling its start/shutdown.
 */
 
-module.exports = initializer({
-  name: 'httpServer',
-  inject: ['ENV', 'httpRouter', '?log'],
-}, initHTTPServer);
+module.exports = initializer(
+  {
+    name: 'httpServer',
+    inject: ['ENV', 'httpRouter', '?log'],
+  },
+  initHTTPServer
+);
 
 /**
  * Initialize an HTTP server
@@ -30,12 +33,14 @@ module.exports = initializer({
  *  in its `service` property.
  */
 function initHTTPServer({ ENV, httpRouter, log = noop }) {
-  return Promise.resolve()
-  .then(() => {
+  return Promise.resolve().then(() => {
     const httpServer = http.createServer(httpRouter);
-    const listenPromise = new Promise((resolve) => {
+    const listenPromise = new Promise(resolve => {
       httpServer.listen(parseInt(ENV.PORT, 10), ENV.HOST, () => {
-        log('info', `HTTP Server listening at "http://${ENV.HOST}:${ENV.PORT}".`);
+        log(
+          'info',
+          `HTTP Server listening at "http://${ENV.HOST}:${ENV.PORT}".`
+        );
         resolve(httpServer);
       });
     });
@@ -43,26 +48,23 @@ function initHTTPServer({ ENV, httpRouter, log = noop }) {
       httpServer.once('error', reject);
     });
 
-    return Promise.race([
-      listenPromise,
-      errorPromise,
-    ])
-    .then(() => ({
+    return Promise.race([listenPromise, errorPromise]).then(() => ({
       service: httpServer,
       errorPromise,
-      dispose: () => new Promise((resolve, reject) => {
-        log('debug', 'Closing HTTP server.');
-        // Avoid to keepalive connections on shutdown
-        http.globalAgent.keepAlive = false;
-        httpServer.close((err) => {
-          if(err) {
-            reject(err);
-            return;
-          }
-          log('debug', 'HTTP server closed');
-          resolve();
-        });
-      }),
+      dispose: () =>
+        new Promise((resolve, reject) => {
+          log('debug', 'Closing HTTP server.');
+          // Avoid to keepalive connections on shutdown
+          http.globalAgent.keepAlive = false;
+          httpServer.close(err => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            log('debug', 'HTTP server closed');
+            resolve();
+          });
+        }),
     }));
   });
 }

@@ -8,7 +8,9 @@ const DEFAULT_TIMEOUT = 30 * 1000;
 
 function noop() {}
 function createIncrementor(n = 0) {
-  return function increment() { return (n++) + ''; };
+  return function increment() {
+    return n++ + '';
+  };
 }
 
 /* Architecture Note #3: HTTP Transactions
@@ -55,14 +57,14 @@ export const initHTTPTransactionWithMethodOverride =
 ```
 */
 
-module.exports = initializer({
-  name: 'httpTransaction',
-  type: 'service',
-  inject: [
-    '?TIMEOUT', '?TRANSACTIONS',
-    'log', 'time', 'delay', '?uniqueId',
-  ],
-}, initHTTPTransaction);
+module.exports = initializer(
+  {
+    name: 'httpTransaction',
+    type: 'service',
+    inject: ['?TIMEOUT', '?TRANSACTIONS', 'log', 'time', 'delay', '?uniqueId'],
+  },
+  initHTTPTransaction
+);
 
 /**
  * Instantiate the httpTransaction service
@@ -94,7 +96,9 @@ module.exports = initializer({
 function initHTTPTransaction({
   TIMEOUT = DEFAULT_TIMEOUT,
   TRANSACTIONS = {},
-  log = noop, time, delay,
+  log = noop,
+  time,
+  delay,
   uniqueId = createIncrementor(),
 }) {
   log('debug', 'HTTP Transaction initialized.');
@@ -125,8 +129,7 @@ function initHTTPTransaction({
      request header. This allows to trace
      transactions end to end with that unique id.
     */
-    return Promise.resolve()
-    .then(() => {
+    return Promise.resolve().then(() => {
       const request = {
         url: req.url,
         method: req.method.toLowerCase(),
@@ -135,7 +138,8 @@ function initHTTPTransaction({
       };
       const transaction = {
         protocol: req.connection.encrypted ? 'https' : 'http',
-        ip: (req.headers['x-forwarded-for'] || '').split(',')[0] ||
+        ip:
+          (req.headers['x-forwarded-for'] || '').split(',')[0] ||
           req.connection.remoteAddress,
         startInBytes: req.socket.bytesRead,
         startOutBytes: req.socket.bytesWritten,
@@ -149,10 +153,10 @@ function initHTTPTransaction({
       let id = req.headers['transaction-id'] || uniqueId();
 
       // Handle bad client transaction ids
-      if(TRANSACTIONS[id]) {
-        initializationPromise = Promise.reject(new HTTPError(
-          400, 'E_TRANSACTION_ID_NOT_UNIQUE', id
-        ));
+      if (TRANSACTIONS[id]) {
+        initializationPromise = Promise.reject(
+          new HTTPError(400, 'E_TRANSACTION_ID_NOT_UNIQUE', id)
+        );
         id = uniqueId();
       } else {
         initializationPromise = Promise.resolve();
@@ -161,18 +165,27 @@ function initHTTPTransaction({
       transaction.id = id;
       TRANSACTIONS[id] = transaction;
 
-      return [request, {
-        id,
-        start: startTransaction.bind(null, { id, req, res, delayPromise }, initializationPromise),
-        catch: catchTransaction.bind(null, { id, req, res }),
-        end: endTransaction.bind(null, { id, req, res, delayPromise }),
-      }];
+      return [
+        request,
+        {
+          id,
+          start: startTransaction.bind(
+            null,
+            { id, req, res, delayPromise },
+            initializationPromise
+          ),
+          catch: catchTransaction.bind(null, { id, req, res }),
+          end: endTransaction.bind(null, { id, req, res, delayPromise }),
+        },
+      ];
     });
   }
 
-  function startTransaction({
-    id, req, res, delayPromise,
-  }, initializationPromise, buildResponse) {
+  function startTransaction(
+    { id, delayPromise },
+    initializationPromise,
+    buildResponse
+  ) {
     /* Architecture Note #3.2: Transaction start
     Once initiated, the transaction can be started. It
      basically spawns a promise that will be resolved
@@ -180,21 +193,14 @@ function initHTTPTransaction({
      is reached.
     */
     return Promise.race([
-      initializationPromise
-      .then(() => buildResponse()),
-      delayPromise
-      .then(() => {
-        throw new HTTPError(
-          504,
-          'E_TRANSACTION_TIMEOUT',
-          TIMEOUT,
-          id
-        );
+      initializationPromise.then(() => buildResponse()),
+      delayPromise.then(() => {
+        throw new HTTPError(504, 'E_TRANSACTION_TIMEOUT', TIMEOUT, id);
       }),
     ]);
   }
 
-  function catchTransaction({ id, req, res }, err) {
+  function catchTransaction({ id, req }, err) {
     /* Architecture Note #3.3: Transaction errors
     Here we are simply casting and logging errors.
      It is important for debugging but also for
@@ -204,8 +210,10 @@ function initHTTPTransaction({
     err = HTTPError.cast(err);
     log('error', 'An error occured', {
       guruMeditation: id,
-      request: TRANSACTIONS[id].protocol +
-        '://' + (req.headers.host || 'localhost') +
+      request:
+        TRANSACTIONS[id].protocol +
+        '://' +
+        (req.headers.host || 'localhost') +
         TRANSACTIONS[id].url,
       verb: req.method,
       status: err.httpCode,
@@ -219,9 +227,7 @@ function initHTTPTransaction({
     throw err;
   }
 
-  function endTransaction({
-    id, req, res, delayPromise,
-  }, response) {
+  function endTransaction({ id, req, res, delayPromise }, response) {
     /* Architecture Note #3.4: Transaction end
     We end the transaction by writing the final status
      and headers and piping the response body if any.
@@ -243,41 +249,39 @@ function initHTTPTransaction({
       res.writeHead(
         response.status,
         statuses[response.status],
-        Object.assign(
-          {},
-          response.headers,
-          { 'Transaction-Id': id }
-        )
+        Object.assign({}, response.headers, { 'Transaction-Id': id })
       );
-      if(response.body && response.body.pipe) {
+      if (response.body && response.body.pipe) {
         response.body.pipe(res);
       } else {
         res.end();
       }
     })
-    .catch((err) => {
-      TRANSACTIONS[id].errored = true;
-      log('error', 'An error occured', {
-        guruMeditation: id,
-        request: TRANSACTIONS[id].protocol + '://' +
-          (req.headers.host || 'localhost') +
-          TRANSACTIONS[id].url,
-        method: req.method,
-        stack: err.stack || err,
+      .catch(err => {
+        TRANSACTIONS[id].errored = true;
+        log('error', 'An error occured', {
+          guruMeditation: id,
+          request:
+            TRANSACTIONS[id].protocol +
+            '://' +
+            (req.headers.host || 'localhost') +
+            TRANSACTIONS[id].url,
+          method: req.method,
+          stack: err.stack || err,
+        });
+      })
+      .then(() => {
+        TRANSACTIONS[id].endTime = time();
+        TRANSACTIONS[id].endInBytes = req.socket.bytesRead;
+        TRANSACTIONS[id].endOutBytes = req.socket.bytesWritten;
+        TRANSACTIONS[id].statusCode = response.status;
+        TRANSACTIONS[id].resHeaders = response.headers || {};
+
+        log('info', TRANSACTIONS[id]);
+
+        delete TRANSACTIONS[id];
+
+        return delay.clear(delayPromise);
       });
-    })
-    .then(() => {
-      TRANSACTIONS[id].endTime = time();
-      TRANSACTIONS[id].endInBytes = req.socket.bytesRead;
-      TRANSACTIONS[id].endOutBytes = req.socket.bytesWritten;
-      TRANSACTIONS[id].statusCode = response.status;
-      TRANSACTIONS[id].resHeaders = response.headers || {};
-
-      log('info', TRANSACTIONS[id]);
-
-      delete TRANSACTIONS[id];
-
-      return delay.clear(delayPromise);
-    });
   }
 }
