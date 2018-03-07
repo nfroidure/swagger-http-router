@@ -1,3 +1,13 @@
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/nfroidure/swagger-http-router/compare/v1.3.0...v1.4.0) (2018-03-07)
+
+
+### Features
+
+* **PARSERS:** Allow async parsers (for multipart/form-data support) ([3ddd90c](https://github.com/nfroidure/swagger-http-router/commit/3ddd90c))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/nfroidure/swagger-http-router/compare/v1.2.1...v1.3.0) (2017-11-12)
 
