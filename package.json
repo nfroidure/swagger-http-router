@@ -12,13 +12,13 @@
   "main": "src/index.js",
   "metapak": {
     "configs": [
+      "jsdocs",
+      "jsarch",
       "readme",
       "travis",
       "eslint",
       "codeclimate",
-      "mocha",
-      "jsdocs",
-      "jsarch"
+      "mocha"
     ],
     "data": {
       "files": "src/*.js tests/*.js",
@@ -38,7 +38,7 @@
     "mocha": "mocha src/*.mocha.js tests/*.mocha.js",
     "prettier": "prettier --write src/*.js tests/*.js",
     "preversion": "npm t && npm run lint && npm run metapak -s",
-    "test": "mocha src/*.mocha.js tests/*.mocha.js && npm run mocha",
+    "test": "npm run mocha",
     "version": "npm run changelog && git add CHANGELOG.md"
   },
   "repository": {
@@ -60,7 +60,7 @@
     "content-type": "^1.0.2",
     "debug": "2.6.1",
     "first-chunk-stream": "^2.0.0",
-    "knifecycle": "^2.1.1",
+    "knifecycle": "^2.4.1",
     "negotiator": "^0.6.1",
     "qs": "^6.5.1",
     "siso": "^2.1.1",
@@ -102,15 +102,15 @@
       "commitizen",
       "cz-conventional-changelog",
       "conventional-changelog-cli",
+      "jsdoc-to-markdown",
+      "jsarch",
       "eslint",
       "eslint-config-prettier",
       "prettier",
       "mocha",
       "mocha-lcov-reporter",
       "coveralls",
-      "istanbul",
-      "jsdoc-to-markdown",
-      "jsarch"
+      "istanbul"
     ]
   }
 }

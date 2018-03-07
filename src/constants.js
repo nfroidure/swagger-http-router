@@ -6,9 +6,9 @@ const qs = require('qs');
 const DEFAULT_DEBUG_NODE_ENVS = ['test', 'development'];
 const DEFAULT_BUFFER_LIMIT = '500kB';
 const DEFAULT_PARSERS = {
-  'application/json': JSON.parse.bind(JSON),
+  'application/json': content => JSON.parse(content),
   'text/plain': identity,
-  'application/x-www-form-urlencoded': qs.parse.bind(qs),
+  'application/x-www-form-urlencoded': content => qs.parse(content),
 };
 const DEFAULT_STRINGIFYERS = {
   'application/json': JSON.stringify.bind(JSON),

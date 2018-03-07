@@ -84,11 +84,15 @@ function getBody(
         bodySpec.contentLength
       );
     }
-    try {
-      return PARSERS[bodySpec.contentType](body.toString());
-    } catch (err) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(PARSERS[bodySpec.contentType](body.toString(), bodySpec));
+      } catch (err) {
+        reject(err);
+      }
+    }).catch(err => {
       throw HTTPError.wrap(err, 400, 'E_BAD_BODY');
-    }
+    });
   });
 }
 

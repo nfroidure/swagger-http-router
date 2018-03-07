@@ -37,6 +37,12 @@ function extractBodySpec(request, consumableMediaTypes, consumableCharsets) {
       ) {
         bodySpec.charset = parsedContentType.parameters.charset.toLowerCase();
       }
+      if (
+        parsedContentType.parameters &&
+        parsedContentType.parameters.boundary
+      ) {
+        bodySpec.boundary = parsedContentType.parameters.boundary;
+      }
     } catch (err) {
       throw new HTTPError(400, 'E_BAD_CONTENT_TYPE');
     }
