@@ -7,7 +7,7 @@ const HTTPError = require('yhttperror');
 const YError = require('yerror');
 const Siso = require('siso').default;
 const Ajv = require('ajv');
-const strictQs = require('strict-qs');
+const strictQs = require('strict-qs').default;
 const { flattenSwagger, getSwaggerOperations } = require('./utils');
 const {
   prepareValidators,
