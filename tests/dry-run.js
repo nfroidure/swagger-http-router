@@ -1,7 +1,20 @@
 'use strict';
 
-const { initializer } = require('knifecycle');
+const { Knifecycle, initializer } = require('knifecycle');
 const { initWepApplication } = require('../src');
+
+const $ = new Knifecycle();
+
+// eslint-disable-next-line
+$.constant('debug', console.error.bind(console));
+$.constant('logger', {
+  // eslint-disable-next-line
+  error: console.error.bind(console),
+  // eslint-disable-next-line
+  info: console.info.bind(console),
+  // eslint-disable-next-line
+  warning: console.log.bind(console),
+});
 
 const API = {
   host: 'localhost:1337',
@@ -41,10 +54,10 @@ const HANDLERS = {
   ),
 };
 
-initWepApplication(API, HANDLERS)
-  .run(['ENV', 'log', 'httpServer', 'process', '$destroy'])
+initWepApplication(API, HANDLERS, $)
+  .run(['ENV', '?log', 'httpServer', 'process', '$destroy'])
   .then(({ ENV, log, $destroy }) => {
-    log('info', 'On air 🚀🌕');
+    log && log('info', 'On air 🚀🌕');
     if (ENV.DRY_RUN) {
       $destroy();
       return;

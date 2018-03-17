@@ -1,8 +1,21 @@
 'use strict';
 
-const sinon = require('sinon');
-const { initializer } = require('knifecycle');
+const { Knifecycle, initializer } = require('knifecycle');
 const { initWepApplication } = require('../src');
+const sinon = require('sinon');
+
+const $ = new Knifecycle();
+
+// eslint-disable-next-line
+$.constant('debug', console.error.bind(console));
+$.constant('logger', {
+  // eslint-disable-next-line
+  error: console.error.bind(console),
+  // eslint-disable-next-line
+  info: console.info.bind(console),
+  // eslint-disable-next-line
+  warning: console.log.bind(console),
+});
 
 const API = {
   host: 'localhost:1337',
@@ -46,7 +59,7 @@ const HANDLERS = {
   ),
 };
 
-initWepApplication(API, HANDLERS)
+initWepApplication(API, HANDLERS, $)
   .constant('time', sinon.stub().returns(new Date('2010-03-06').getTime()))
   .run(['ENV', 'log', 'httpServer', 'process', '$destroy'])
   .then(({ ENV, log, $destroy }) => {

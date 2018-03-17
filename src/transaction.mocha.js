@@ -5,7 +5,7 @@ const assert = require('assert');
 const sinon = require('sinon');
 const StreamTest = require('streamtest');
 const YError = require('yerror');
-const initDelay = require('common-services/src/delay.mock');
+const initDelay = require('common-services/dist/delay.mock').default;
 const initHTTPTransaction = require('./transaction');
 
 function streamifyBody(response) {

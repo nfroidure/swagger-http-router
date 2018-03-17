@@ -7,7 +7,7 @@ const {
   initRandomService,
   initDelayService,
   initProcessService,
-} = require('common-services');
+} = require('common-services').default;
 
 const initHTTPRouter = require('./router');
 const initHTTPTransaction = require('./transaction');
@@ -126,12 +126,6 @@ function initWepApplication(API, HANDLERS, $ = getInstance()) {
   );
   $.constant('exit', process.exit);
   $.constant('API', API);
-  $.constant('logger', {
-    debug: console.error.bind(console), // eslint-disable-line
-    error: console.error.bind(console), // eslint-disable-line
-    info: console.info.bind(console), // eslint-disable-line
-    warning: console.log.bind(console), // eslint-disable-line
-  });
 
   return $;
 }
