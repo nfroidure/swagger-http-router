@@ -1,7 +1,5 @@
-'use strict';
-
-const { Knifecycle, initializer } = require('knifecycle');
-const { initWepApplication } = require('../src');
+import { Knifecycle, initializer } from 'knifecycle';
+import { initWepApplication } from '../src';
 
 const $ = new Knifecycle();
 
@@ -50,7 +48,7 @@ const HANDLERS = {
     () =>
       Promise.resolve(() => ({
         status: 200,
-      }))
+      })),
   ),
 };
 

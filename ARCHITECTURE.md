@@ -67,7 +67,7 @@ The HTTP transaction flow is very simple.
   specifically to one of a few
   handlers.
 
-[See in context](./src/index.js#L17-L76)
+[See in context](./src/index.js#L15-L74)
 
 
 
@@ -84,7 +84,7 @@ It is very opiniated and clearly diverges from the
 Here, the single source of truth is your API
  definition. No documentation, no route.
 
-[See in context](./src/router.js#L42-L53)
+[See in context](./src/router.js#L40-L51)
 
 
 
@@ -93,7 +93,7 @@ Here, the single source of truth is your API
 The `httpServer` service is responsible for instanciating
  the httpServer and handling its start/shutdown.
 
-[See in context](./src/server.js#L8-L11)
+[See in context](./src/server.js#L6-L9)
 
 
 
@@ -111,7 +111,7 @@ there are two kinds of requests:
  be parsed and validated into the
  handler itself.
 
-[See in context](./src/body.js#L12-L24)
+[See in context](./src/body.js#L5-L17)
 
 
 
@@ -129,12 +129,12 @@ One could argue that it would have been
  now but keeping it in mind.
 
 Also, looking closely to Prepack that
- could improve singnificantly this
+ could improve significantly this
  project performances with close to no
  time costs:
  https://github.com/facebook/prepack/issues/522#issuecomment-300706099
 
-[See in context](./src/validation.js#L12-L29)
+[See in context](./src/validation.js#L4-L21)
 
 
 
@@ -182,7 +182,7 @@ export const initHTTPTransactionWithMethodOverride =
 }, initHTTPTransaction);
 ```
 
-[See in context](./src/transaction.js#L16-L58)
+[See in context](./src/transaction.js#L14-L56)
 
 
 
@@ -199,7 +199,7 @@ Each transaction has a unique id that is either
  request header. This allows to trace
  transactions end to end with that unique id.
 
-[See in context](./src/transaction.js#L120-L131)
+[See in context](./src/transaction.js#L118-L129)
 
 
 
@@ -210,7 +210,7 @@ Once initiated, the transaction can be started. It
  to the actual response or rejected if the timeout
  is reached.
 
-[See in context](./src/transaction.js#L189-L194)
+[See in context](./src/transaction.js#L187-L192)
 
 
 
@@ -221,7 +221,7 @@ Here we are simply casting and logging errors.
  ending the transaction properly if an error
  occurs.
 
-[See in context](./src/transaction.js#L204-L209)
+[See in context](./src/transaction.js#L202-L207)
 
 
 
@@ -241,5 +241,5 @@ The transaction can till error at that time but it
  Once terminated, the transaction is removed
   from the `TRANSACTIONS` hash.
 
-[See in context](./src/transaction.js#L231-L245)
+[See in context](./src/transaction.js#L229-L243)
 

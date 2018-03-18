@@ -1,13 +1,5 @@
-'use strict';
-
-const camelCase = require('camel-case');
-const HTTPError = require('yhttperror');
-
-module.exports = {
-  applyValidators,
-  prepareValidators,
-  filterHeaders,
-};
+import camelCase from 'camel-case';
+import HTTPError from 'yhttperror';
 
 /* Architecture Note #2.1: Validators
 For performance reasons, the validators are
@@ -22,13 +14,13 @@ One could argue that it would have been
  now but keeping it in mind.
 
 Also, looking closely to Prepack that
- could improve singnificantly this
+ could improve significantly this
  project performances with close to no
  time costs:
  https://github.com/facebook/prepack/issues/522#issuecomment-300706099
 */
 
-function applyValidators(operation, validators, parameters) {
+export function applyValidators(operation, validators, parameters) {
   (operation.parameters || []).forEach(({ name, in: isIn }) => {
     if ('header' === isIn) {
       return validators[name](parameters[camelCase(name)]);
@@ -37,7 +29,7 @@ function applyValidators(operation, validators, parameters) {
   });
 }
 
-function prepareValidators(ajv, operation) {
+export function prepareValidators(ajv, operation) {
   return (operation.parameters || []).reduce((validators, parameter) => {
     let schema;
 
@@ -53,20 +45,20 @@ function prepareValidators(ajv, operation) {
     validators[parameter.name] = _validateParameter.bind(
       null,
       parameter,
-      ajv.compile(schema)
+      ajv.compile(schema),
     );
     return validators;
   }, {});
 }
 
-function _validateParameter(parameter, validator, value) {
+export function _validateParameter(parameter, validator, value) {
   if (parameter.required && 'undefined' === typeof value) {
     throw new HTTPError(
       400,
       'E_REQUIRED_PARAMETER',
       parameter.name,
       typeof value,
-      value
+      value,
     );
   }
   if ('undefined' !== typeof value && !validator(value)) {
@@ -76,12 +68,12 @@ function _validateParameter(parameter, validator, value) {
       parameter.name,
       typeof value,
       value,
-      validator.errors
+      validator.errors,
     );
   }
 }
 
-function filterHeaders(parameters, headers) {
+export function filterHeaders(parameters, headers) {
   return (parameters || [])
     .filter(parameter => 'header' === parameter.in)
     .reduce((filteredHeaders, parameter) => {

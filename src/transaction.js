@@ -1,8 +1,6 @@
-'use strict';
-
-const { initializer } = require('knifecycle');
-const HTTPError = require('yhttperror');
-const statuses = require('statuses');
+import { initializer } from 'knifecycle';
+import HTTPError from 'yhttperror';
+import statuses from 'statuses';
 
 const DEFAULT_TIMEOUT = 30 * 1000;
 
@@ -57,13 +55,13 @@ export const initHTTPTransactionWithMethodOverride =
 ```
 */
 
-module.exports = initializer(
+export default initializer(
   {
     name: 'httpTransaction',
     type: 'service',
     inject: ['?TIMEOUT', '?TRANSACTIONS', 'log', 'time', 'delay', '?uniqueId'],
   },
-  initHTTPTransaction
+  initHTTPTransaction,
 );
 
 /**
@@ -155,7 +153,7 @@ function initHTTPTransaction({
       // Handle bad client transaction ids
       if (TRANSACTIONS[id]) {
         initializationPromise = Promise.reject(
-          new HTTPError(400, 'E_TRANSACTION_ID_NOT_UNIQUE', id)
+          new HTTPError(400, 'E_TRANSACTION_ID_NOT_UNIQUE', id),
         );
         id = uniqueId();
       } else {
@@ -172,7 +170,7 @@ function initHTTPTransaction({
           start: startTransaction.bind(
             null,
             { id, req, res, delayPromise },
-            initializationPromise
+            initializationPromise,
           ),
           catch: catchTransaction.bind(null, { id, req, res }),
           end: endTransaction.bind(null, { id, req, res, delayPromise }),
@@ -184,7 +182,7 @@ function initHTTPTransaction({
   function startTransaction(
     { id, delayPromise },
     initializationPromise,
-    buildResponse
+    buildResponse,
   ) {
     /* Architecture Note #3.2: Transaction start
     Once initiated, the transaction can be started. It
@@ -249,7 +247,7 @@ function initHTTPTransaction({
       res.writeHead(
         response.status,
         statuses[response.status],
-        Object.assign({}, response.headers, { 'Transaction-Id': id })
+        Object.assign({}, response.headers, { 'Transaction-Id': id }),
       );
       if (response.body && response.body.pipe) {
         response.body.pipe(res);

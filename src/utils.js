@@ -1,11 +1,4 @@
-'use strict';
-
-const SwaggerParser = require('swagger-parser');
-
-module.exports = {
-  flattenSwagger,
-  getSwaggerOperations,
-};
+import SwaggerParser from 'swagger-parser';
 
 /**
  * Flatten the inputed Swagger file
@@ -15,7 +8,7 @@ module.exports = {
  * @return {Object}
  * The flattened Swagger definition
  */
-function flattenSwagger(API) {
+export function flattenSwagger(API) {
   const parser = new SwaggerParser();
 
   return parser.dereference(API);
@@ -37,23 +30,18 @@ function flattenSwagger(API) {
  *   // Do something with that operation
  * });
  */
-function getSwaggerOperations(API) {
+export function getSwaggerOperations(API) {
   return Object.keys(API.paths).reduce(
     (operations, path) =>
       Object.keys(API.paths[path]).reduce(
         (operations, method) =>
-          operations.concat(
-            Object.assign(
-              {},
-              {
-                path,
-                method,
-              },
-              API.paths[path][method]
-            )
-          ),
-        operations
+          operations.concat({
+            path,
+            method,
+            ...API.paths[path][method],
+          }),
+        operations,
       ),
-    []
+    [],
   );
 }

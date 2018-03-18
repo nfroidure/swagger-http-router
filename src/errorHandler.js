@@ -1,18 +1,13 @@
-'use strict';
+import { initializer } from 'knifecycle';
+import { DEFAULT_DEBUG_NODE_ENVS, DEFAULT_STRINGIFYERS } from './constants';
 
-const { initializer } = require('knifecycle');
-const {
-  DEFAULT_DEBUG_NODE_ENVS,
-  DEFAULT_STRINGIFYERS,
-} = require('./constants');
-
-module.exports = initializer(
+export default initializer(
   {
     name: 'errorHandler',
     type: 'service',
     inject: ['?ENV', '?DEBUG_NODE_ENVS', '?STRINGIFYERS'],
   },
-  initErrorHandler
+  initErrorHandler,
 );
 
 /**

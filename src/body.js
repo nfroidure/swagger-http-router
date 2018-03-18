@@ -1,13 +1,6 @@
-'use strict';
-
-const HTTPError = require('yhttperror');
-const firstChunkStream = require('first-chunk-stream');
-const Stream = require('stream');
-
-module.exports = {
-  getBody,
-  sendBody,
-};
+import HTTPError from 'yhttperror';
+import firstChunkStream from 'first-chunk-stream';
+import Stream from 'stream';
 
 /* Architecture Note #2.1: Request body
 According to the Swagger/OpenAPI specification
@@ -22,14 +15,14 @@ there are two kinds of requests:
  be parsed and validated into the
  handler itself.
 */
-function getBody(
+export async function getBody(
   { DECODERS, PARSERS, bufferLimit },
   operation,
   inputStream,
-  bodySpec
+  bodySpec,
 ) {
   const bodyParameter = (operation.parameters || []).find(
-    parameter => 'body' === parameter.in
+    parameter => 'body' === parameter.in,
   );
   const bodyIsEmpty = !(bodySpec.contentType && bodySpec.contentLength);
   const bodyIsParseable = !(bodyParameter && bodyParameter.schema);
@@ -43,7 +36,7 @@ function getBody(
   }
   if (!PARSERS[bodySpec.contentType]) {
     return Promise.reject(
-      new HTTPError(500, 'E_PARSER_LACK', bodySpec.contentType)
+      new HTTPError(500, 'E_PARSER_LACK', bodySpec.contentType),
     );
   }
   return new Promise((resolve, reject) => {
@@ -69,11 +62,11 @@ function getBody(
             return;
           }
           reject(
-            new HTTPError(400, 'E_REQUEST_CONTENT_TOO_LARGE', chunk.length)
+            new HTTPError(400, 'E_REQUEST_CONTENT_TOO_LARGE', chunk.length),
           );
           cb();
-        }
-      )
+        },
+      ),
     );
   }).then(body => {
     if (body.length !== bodySpec.contentLength) {
@@ -81,7 +74,7 @@ function getBody(
         400,
         'E_BAD_BODY_LENGTH',
         body.length,
-        bodySpec.contentLength
+        bodySpec.contentLength,
       );
     }
     return new Promise((resolve, reject) => {
@@ -96,10 +89,10 @@ function getBody(
   });
 }
 
-function sendBody(
+export async function sendBody(
   { DEBUG_NODE_ENVS, ENV, API, ENCODERS, STRINGIFYERS, log, ajv },
   operation,
-  response
+  response,
 ) {
   const schema =
     (operation &&
@@ -121,7 +114,7 @@ function sendBody(
     if (schema) {
       log(
         'warning',
-        `Declared a schema in the ${operation.id} response but found no body.`
+        `Declared a schema in the ${operation.id} response but found no body.`,
       );
     }
     return response;
@@ -133,7 +126,7 @@ function sendBody(
         'warning',
         `Declared a schema in the ${
           operation.id
-        } response but returned a streamed body.`
+        } response but returned a streamed body.`,
       );
     }
     return response;
@@ -162,13 +155,13 @@ function sendBody(
   stream.write(STRINGIFYERS[response.headers['content-type']](response.body));
 
   stream.end();
-  return Object.assign({}, response, {
-    headers: Object.assign(
-      {
-        'content-type': `${response.headers['content-type']}; charset=utf-8`,
-      },
-      response.headers
-    ),
+
+  return {
+    ...response,
+    headers: {
+      'content-type': `${response.headers['content-type']}; charset=utf-8`,
+      ...response.headers,
+    },
     body: stream,
-  });
+  };
 }

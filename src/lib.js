@@ -1,21 +1,13 @@
-'use strict';
+import HTTPError from 'yhttperror';
+import { parse as parseContentType } from 'content-type';
+import preferredCharsets from 'negotiator/lib/charset';
+import preferredMediaType from 'negotiator/lib/encoding';
 
-const HTTPError = require('yhttperror');
-const { parse: parseContentType } = require('content-type');
-const preferredCharsets = require('negotiator/lib/charset');
-const preferredMediaType = require('negotiator/lib/encoding');
-
-module.exports = {
-  extractBodySpec,
-  checkBodyCharset,
-  checkBodyMediaType,
-  extractResponseSpec,
-  checkResponseCharset,
-  checkResponseMediaType,
-  executeHandler,
-};
-
-function extractBodySpec(request, consumableMediaTypes, consumableCharsets) {
+export function extractBodySpec(
+  request,
+  consumableMediaTypes,
+  consumableCharsets,
+) {
   const bodySpec = {
     contentType: '',
     contentLength: request.headers['content-length']
@@ -27,7 +19,7 @@ function extractBodySpec(request, consumableMediaTypes, consumableCharsets) {
   if (request.headers['content-type']) {
     try {
       const parsedContentType = parseContentType(
-        request.headers['content-type']
+        request.headers['content-type'],
       );
 
       bodySpec.contentType = parsedContentType.type;
@@ -54,7 +46,7 @@ function extractBodySpec(request, consumableMediaTypes, consumableCharsets) {
   return bodySpec;
 }
 
-function checkBodyCharset(bodySpec, consumableCharsets) {
+export function checkBodyCharset(bodySpec, consumableCharsets) {
   if (
     bodySpec.contentLength &&
     bodySpec.charset &&
@@ -64,12 +56,12 @@ function checkBodyCharset(bodySpec, consumableCharsets) {
       406,
       'E_UNSUPPORTED_CHARSET',
       bodySpec.charset,
-      consumableCharsets
+      consumableCharsets,
     );
   }
 }
 
-function checkBodyMediaType(bodySpec, consumableMediaTypes) {
+export function checkBodyMediaType(bodySpec, consumableMediaTypes) {
   if (
     bodySpec.contentLength &&
     bodySpec.contentType &&
@@ -79,16 +71,16 @@ function checkBodyMediaType(bodySpec, consumableMediaTypes) {
       415,
       'E_UNSUPPORTED_MEDIA_TYPE',
       bodySpec.contentType,
-      consumableMediaTypes
+      consumableMediaTypes,
     );
   }
 }
 
-function extractResponseSpec(
+export function extractResponseSpec(
   operation,
   request,
   supportedMediaTypes,
-  supportedCharsets
+  supportedCharsets,
 ) {
   const accept = request.headers.accept || '*';
   const responseSpec = {
@@ -97,37 +89,45 @@ function extractResponseSpec(
       : supportedCharsets,
     contentTypes: preferredMediaType(
       accept.replace(/(^|,)\*\/\*($|,|;)/g, '$1*$2'),
-      supportedMediaTypes
+      supportedMediaTypes,
     ),
   };
 
   return responseSpec;
 }
 
-function checkResponseMediaType(request, responseSpec, produceableMediaTypes) {
+export function checkResponseMediaType(
+  request,
+  responseSpec,
+  produceableMediaTypes,
+) {
   if (0 === responseSpec.contentTypes.length) {
     throw new HTTPError(
       406,
       'E_UNACCEPTABLE_MEDIA_TYPE',
       request.headers.accept,
-      produceableMediaTypes
+      produceableMediaTypes,
     );
   }
 }
 
-function checkResponseCharset(request, responseSpec, produceableCharsets) {
+export function checkResponseCharset(
+  request,
+  responseSpec,
+  produceableCharsets,
+) {
   if (0 === responseSpec.charsets.length) {
     throw new HTTPError(
       406,
       'E_UNACCEPTABLE_CHARSET',
       request.headers['accept-charset'],
       responseSpec.charsets,
-      produceableCharsets
+      produceableCharsets,
     );
   }
 }
 
-function executeHandler(operation, handler, parameters) {
+export async function executeHandler(operation, handler, parameters) {
   const responsePromise = handler(parameters, operation);
 
   if (!(responsePromise && responsePromise.then)) {
@@ -136,18 +136,19 @@ function executeHandler(operation, handler, parameters) {
       'E_NO_RESPONSE_PROMISE',
       operation.operationId,
       operation.method,
-      operation.path
+      operation.path,
     );
   }
-  return responsePromise.then(response => {
-    if (!response) {
-      throw new HTTPError(500, 'E_NO_RESPONSE');
-    }
-    if ('number' !== typeof response.status) {
-      throw new HTTPError(500, 'E_NO_RESPONSE_STATUS');
-    }
 
-    response.headers = response.headers || {};
-    return response;
-  });
+  const response = await responsePromise;
+
+  if (!response) {
+    throw new HTTPError(500, 'E_NO_RESPONSE');
+  }
+  if ('number' !== typeof response.status) {
+    throw new HTTPError(500, 'E_NO_RESPONSE_STATUS');
+  }
+
+  response.headers = response.headers || {};
+  return response;
 }

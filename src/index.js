@@ -1,18 +1,16 @@
-'use strict';
-
-const { getInstance, initializer } = require('knifecycle');
-const {
+import { getInstance, initializer } from 'knifecycle';
+import {
   initLogService,
   initTimeService,
   initRandomService,
   initDelayService,
   initProcessService,
-} = require('common-services').default;
+} from 'common-services';
 
-const initHTTPRouter = require('./router');
-const initHTTPTransaction = require('./transaction');
-const initHTTPServer = require('./server');
-const initErrorHandler = require('./errorHandler');
+import initHTTPRouter from './router';
+import initHTTPTransaction from './transaction';
+import initHTTPServer from './server';
+import initErrorHandler from './errorHandler';
 
 /* Architecture Note #1: Principles
 
@@ -75,13 +73,11 @@ The HTTP transaction flow is very simple.
   handlers.
 */
 
-module.exports = {
+export {
   initHTTPRouter,
   initHTTPTransaction,
   initHTTPServer,
   initErrorHandler,
-  initWepApplication,
-  registerHandlers,
 };
 
 /**
@@ -98,7 +94,7 @@ module.exports = {
  * The passed in Knifecycle instance or the one created
  *  by default.
  */
-function initWepApplication(API, HANDLERS, $ = getInstance()) {
+export function initWepApplication(API, HANDLERS, $ = getInstance()) {
   [
     initLogService,
     initTimeService,
@@ -121,8 +117,8 @@ function initWepApplication(API, HANDLERS, $ = getInstance()) {
         HOST: API.host.split(':')[0],
         PORT: API.host.split(':')[1] || 80,
       },
-      process.env
-    )
+      process.env,
+    ),
   );
   $.constant('exit', process.exit);
   $.constant('API', API);
@@ -139,7 +135,7 @@ function initWepApplication(API, HANDLERS, $ = getInstance()) {
  * The handlers hash
  * @return {void}
  */
-function registerHandlers($, HANDLERS) {
+export function registerHandlers($, HANDLERS) {
   Object.keys(HANDLERS).forEach(handlerName => {
     $.register(HANDLERS[handlerName]);
   });
@@ -151,7 +147,7 @@ function registerHandlers($, HANDLERS) {
         type: 'service',
         inject: Object.keys(HANDLERS),
       },
-      handlers => Promise.resolve(handlers)
-    )
+      handlers => Promise.resolve(handlers),
+    ),
   );
 }

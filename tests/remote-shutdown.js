@@ -1,8 +1,6 @@
-'use strict';
-
-const { Knifecycle, initializer } = require('knifecycle');
-const { initWepApplication } = require('../src');
-const sinon = require('sinon');
+import { Knifecycle, initializer } from 'knifecycle';
+import { initWepApplication } from '../src';
+import sinon from 'sinon';
 
 const $ = new Knifecycle();
 
@@ -55,7 +53,7 @@ const HANDLERS = {
         return Promise.resolve({
           status: 200,
         });
-      })
+      }),
   ),
 };
 

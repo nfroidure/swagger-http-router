@@ -1,38 +1,36 @@
-'use strict';
-
-const bytes = require('bytes');
-const Stream = require('stream');
-const { initializer } = require('knifecycle');
-const HTTPError = require('yhttperror');
-const YError = require('yerror');
-const Siso = require('siso').default;
-const Ajv = require('ajv');
-const strictQs = require('strict-qs').default;
-const { flattenSwagger, getSwaggerOperations } = require('./utils');
-const {
+import bytes from 'bytes';
+import Stream from 'stream';
+import { initializer } from 'knifecycle';
+import HTTPError from 'yhttperror';
+import YError from 'yerror';
+import Siso from 'siso';
+import Ajv from 'ajv';
+import strictQs from 'strict-qs';
+import { flattenSwagger, getSwaggerOperations } from './utils';
+import {
   prepareValidators,
   applyValidators,
   filterHeaders,
-} = require('./validation');
-const {
+} from './validation';
+import {
   extractBodySpec,
   extractResponseSpec,
   checkResponseCharset,
   checkResponseMediaType,
   executeHandler,
-} = require('./lib');
-const { getBody, sendBody } = require('./body');
+} from './lib';
+import { getBody, sendBody } from './body';
 
 const SEARCH_SEPARATOR = '?';
 
-const {
+import {
   DEFAULT_DEBUG_NODE_ENVS,
   DEFAULT_BUFFER_LIMIT,
   DEFAULT_PARSERS,
   DEFAULT_STRINGIFYERS,
   DEFAULT_DECODERS,
   DEFAULT_ENCODERS,
-} = require('./constants');
+} from './constants';
 
 function noop() {}
 function identity(x) {
@@ -52,7 +50,7 @@ Here, the single source of truth is your API
  definition. No documentation, no route.
 */
 
-module.exports = initializer(
+export default initializer(
   {
     name: 'httpRouter',
     inject: [
@@ -71,7 +69,7 @@ module.exports = initializer(
     ],
     options: { singleton: true },
   },
-  initHTTPRouter
+  initHTTPRouter,
 );
 
 /**
@@ -213,13 +211,13 @@ function initHTTPRouter({
                       const bodySpec = extractBodySpec(
                         request,
                         consumableMediaTypes,
-                        consumableCharsets
+                        consumableCharsets,
                       );
                       responseSpec = extractResponseSpec(
                         operation,
                         request,
                         produceableMediaTypes,
-                        produceableCharsets
+                        produceableCharsets,
                       );
 
                       return getBody(
@@ -230,15 +228,18 @@ function initHTTPRouter({
                         },
                         operation,
                         request.body,
-                        bodySpec
+                        bodySpec,
                       )
                         .then(body =>
                           Object.assign(
                             body ? { body } : {},
                             pathParameters,
                             strictQs(operation.parameters, search),
-                            filterHeaders(operation.parameters, request.headers)
-                          )
+                            filterHeaders(
+                              operation.parameters,
+                              request.headers,
+                            ),
+                          ),
                         )
                         .then(parameters => {
                           applyValidators(operation, validators, parameters);
@@ -270,27 +271,27 @@ function initHTTPRouter({
                               new HTTPError(
                                 500,
                                 'E_STRINGIFYER_LACK',
-                                response.headers['content-type']
-                              )
+                                response.headers['content-type'],
+                              ),
                             );
                           }
                           if (response.body) {
                             checkResponseCharset(
                               request,
                               responseSpec,
-                              produceableCharsets
+                              produceableCharsets,
                             );
                             checkResponseMediaType(
                               request,
                               responseSpec,
-                              produceableMediaTypes
+                              produceableMediaTypes,
                             );
                           }
 
                           return response;
                         });
-                    }
-                  )
+                    },
+                  ),
               )
               .catch(transaction.catch)
               .catch(errorHandler.bind(null, transaction.id, responseSpec))
@@ -299,7 +300,7 @@ function initHTTPRouter({
                   log(
                     'warning',
                     'Body stripped:',
-                    response.body instanceof Stream ? response.body : 'Stream'
+                    response.body instanceof Stream ? response.body : 'Stream',
                   );
                   return Object.keys(response)
                     .filter(key => 'body' !== key)
@@ -325,10 +326,10 @@ function initHTTPRouter({
                     ajv,
                   },
                   operation,
-                  response
-                )
+                  response,
+                ),
               )
-              .then(transaction.end)
+              .then(transaction.end),
           )
           .catch(handleFatalError);
       }
@@ -347,7 +348,7 @@ function _explodePath(path, parameters) {
       }
 
       const parameter = (parameters || []).find(
-        aParameter => aParameter.name === matches[1]
+        aParameter => aParameter.name === matches[1],
       );
 
       if (!parameter) {
@@ -379,9 +380,9 @@ function _createRouters({ HANDLERS, ajv }, API) {
         routers[method] = routers[method] || new Siso();
         routers[method].register(
           _explodePath((API.basePath || '') + path, parameters),
-          { handler, operation, validators: prepareValidators(ajv, operation) }
+          { handler, operation, validators: prepareValidators(ajv, operation) },
         );
       });
-    })
+    }),
   ).then(() => routers);
 }
