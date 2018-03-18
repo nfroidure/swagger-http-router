@@ -1,3 +1,13 @@
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/nfroidure/swagger-http-router/compare/v1.5.0...v1.5.1) (2018-03-18)
+
+
+### Bug Fixes
+
+* **HTTPTransaction:** Prevent conflicts for transaction ids ([a6ac5c5](https://github.com/nfroidure/swagger-http-router/commit/a6ac5c5))
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/nfroidure/swagger-http-router/compare/v1.4.0...v1.5.0) (2018-03-18)
 
