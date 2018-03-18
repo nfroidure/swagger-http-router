@@ -93,12 +93,17 @@ export default initializer(
  */
 function initHTTPTransaction({
   TIMEOUT = DEFAULT_TIMEOUT,
-  TRANSACTIONS = {},
+  TRANSACTIONS,
   log = noop,
   time,
   delay,
   uniqueId = createIncrementor(),
 }) {
+  // Not using default value to always
+  // get an empty object here and avoid
+  // conflicts between instances spawned
+  // with defaults
+  TRANSACTIONS = TRANSACTIONS || {};
   log('debug', 'HTTP Transaction initialized.');
   return Promise.resolve(httpTransaction);
 

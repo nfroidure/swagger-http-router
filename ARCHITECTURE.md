@@ -199,7 +199,7 @@ Each transaction has a unique id that is either
  request header. This allows to trace
  transactions end to end with that unique id.
 
-[See in context](./src/transaction.js#L119-L130)
+[See in context](./src/transaction.js#L123-L134)
 
 
 
@@ -210,7 +210,7 @@ Once initiated, the transaction can be started. It
  to the actual response or rejected if the timeout
  is reached.
 
-[See in context](./src/transaction.js#L188-L193)
+[See in context](./src/transaction.js#L192-L197)
 
 
 
@@ -221,7 +221,7 @@ Here we are simply casting and logging errors.
  ending the transaction properly if an error
  occurs.
 
-[See in context](./src/transaction.js#L203-L208)
+[See in context](./src/transaction.js#L207-L212)
 
 
 
@@ -241,5 +241,5 @@ The transaction can till error at that time but it
  Once terminated, the transaction is removed
   from the `TRANSACTIONS` hash.
 
-[See in context](./src/transaction.js#L230-L244)
+[See in context](./src/transaction.js#L234-L248)
 
