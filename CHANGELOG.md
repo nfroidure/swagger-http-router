@@ -1,3 +1,13 @@
+<a name="1.5.3"></a>
+## [1.5.3](https://github.com/nfroidure/swagger-http-router/compare/v1.5.2...v1.5.3) (2018-03-18)
+
+
+### Bug Fixes
+
+* **NPM:** Fix main file ([e33a5a8](https://github.com/nfroidure/swagger-http-router/commit/e33a5a8))
+
+
+
 <a name="1.5.2"></a>
 ## [1.5.2](https://github.com/nfroidure/swagger-http-router/compare/v1.5.1...v1.5.2) (2018-03-18)
 
