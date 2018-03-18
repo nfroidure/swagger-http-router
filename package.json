@@ -9,7 +9,7 @@
     "REST",
     "API"
   ],
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "metapak": {
     "configs": [
       "jsdocs",
