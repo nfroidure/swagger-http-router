@@ -31,6 +31,7 @@ export default initializer(
  *  in its `service` property.
  */
 async function initHTTPServer({ ENV, httpRouter, log = noop }) {
+  const sockets = new Set();
   const httpServer = http.createServer(httpRouter);
   const listenPromise = new Promise(resolve => {
     httpServer.listen(parseInt(ENV.PORT, 10), ENV.HOST, () => {
@@ -40,6 +41,13 @@ async function initHTTPServer({ ENV, httpRouter, log = noop }) {
   });
   const errorPromise = new Promise((resolve, reject) => {
     httpServer.once('error', reject);
+  });
+
+  httpServer.on('connection', socket => {
+    sockets.add(socket);
+    socket.on('close', () => {
+      sockets.delete(socket);
+    });
   });
 
   return Promise.race([listenPromise, errorPromise]).then(() => ({
@@ -58,6 +66,11 @@ async function initHTTPServer({ ENV, httpRouter, log = noop }) {
           log('debug', 'HTTP server closed');
           resolve();
         });
+        if (ENV.DESTROY_SOCKETS) {
+          for (const socket of sockets.values()) {
+            socket.destroy();
+          }
+        }
       }),
   }));
 }
