@@ -63,6 +63,7 @@ export default initializer(
       '?STRINGIFYERS',
       '?DECODERS',
       '?ENCODERS',
+      '?QUERY_PARSER',
       '?log',
       'httpTransaction',
       'errorHandler',
@@ -96,6 +97,12 @@ export default initializer(
  * The synchronous body stringifyers (for
  *  operations that defines a response body
  *  schema)
+ * @param  {Object} [services.ENCODERS]
+ * A map of encoder stream constructors
+ * @param  {Object} [services.DECODERS]
+ * A map of decoder stream constructors
+ * @param  {Object} [services.QUERY_PARSER]
+ * A query parser with the `strict-qs` signature
  * @param  {Function} [services.log=noop]
  * A logging function
  * @param  {Function} services.httpTransaction
@@ -113,6 +120,7 @@ function initHTTPRouter({
   STRINGIFYERS = DEFAULT_STRINGIFYERS,
   DECODERS = DEFAULT_DECODERS,
   ENCODERS = DEFAULT_ENCODERS,
+  QUERY_PARSER = strictQs,
   log = noop,
   httpTransaction,
   errorHandler,
@@ -234,7 +242,7 @@ function initHTTPRouter({
                           Object.assign(
                             body ? { body } : {},
                             pathParameters,
-                            strictQs(operation.parameters, search),
+                            QUERY_PARSER(operation.parameters, search),
                             filterHeaders(
                               operation.parameters,
                               request.headers,

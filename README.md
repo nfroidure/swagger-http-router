@@ -620,6 +620,9 @@ Initialize an HTTP router
 | [services.BUFFER_LIMIT] | <code>String</code> |  | The maximum bufferisation before parsing the  request body |
 | [services.PARSERS] | <code>Object</code> |  | The synchronous body parsers (for operations  that defines a request body schema) |
 | [services.STRINGIFYERS] | <code>Object</code> |  | The synchronous body stringifyers (for  operations that defines a response body  schema) |
+| [services.ENCODERS] | <code>Object</code> |  | A map of encoder stream constructors |
+| [services.DECODERS] | <code>Object</code> |  | A map of decoder stream constructors |
+| [services.QUERY_PARSER] | <code>Object</code> |  | A query parser with the `strict-qs` signature |
 | [services.log] | <code>function</code> | <code>noop</code> | A logging function |
 | services.httpTransaction | <code>function</code> |  | A function to create a new HTTP transaction |
 
