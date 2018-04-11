@@ -67,6 +67,7 @@ HTTP server closed
             {
               env: Object.assign({}, process.env, {
                 NODE_ENV: 'development',
+                DESTROY_SOCKETS: 1,
               }),
             },
             (err, stdout, stderr) => {
