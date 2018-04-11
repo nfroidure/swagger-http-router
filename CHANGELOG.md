@@ -1,3 +1,19 @@
+<a name="1.6.0"></a>
+# [1.6.0](https://github.com/nfroidure/swagger-http-router/compare/v1.5.3...v1.6.0) (2018-04-11)
+
+
+### Features
+
+* **HTTPRouter:** Allow to inject a different query parser ([d00b712](https://github.com/nfroidure/swagger-http-router/commit/d00b712)), closes [#5](https://github.com/nfroidure/swagger-http-router/issues/5)
+* **HTTPServer:** Allow to destroy sockets for a quicker shutdown ([9467680](https://github.com/nfroidure/swagger-http-router/commit/9467680)), closes [#4](https://github.com/nfroidure/swagger-http-router/issues/4)
+
+
+### Performance Improvements
+
+* **HTTPServer:** Avoid keeping track of opened sockets when unuseful ([2d15098](https://github.com/nfroidure/swagger-http-router/commit/2d15098))
+
+
+
 <a name="1.5.3"></a>
 ## [1.5.3](https://github.com/nfroidure/swagger-http-router/compare/v1.5.2...v1.5.3) (2018-03-18)
 
