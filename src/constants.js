@@ -23,7 +23,9 @@ export const DEFAULT_ENCODERS = {
 function ensureString(str) {
   return 'undefined' === typeof str
     ? ''
-    : 'string' === typeof str ? str : JSON.stringify(str);
+    : 'string' === typeof str
+      ? str
+      : JSON.stringify(str);
 }
 
 function identity(me) {
