@@ -1,6 +1,6 @@
 {
   "name": "swagger-http-router",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A HTTP router based on your Swagger/OpenAPI definition.",
   "keywords": [
     "Swagger",
@@ -24,7 +24,9 @@
     "data": {
       "files": "src/*.js tests/*.js",
       "testsFiles": "src/*.mocha.js tests/*.mocha.js",
-      "ignore": ["dist"]
+      "ignore": [
+        "dist"
+      ]
     }
   },
   "scripts": {

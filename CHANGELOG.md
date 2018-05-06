@@ -1,3 +1,8 @@
+<a name="1.6.1"></a>
+## [1.6.1](https://github.com/nfroidure/swagger-http-router/compare/v1.6.0...v1.6.1) (2018-05-06)
+
+
+
 <a name="1.6.0"></a>
 # [1.6.0](https://github.com/nfroidure/swagger-http-router/compare/v1.5.3...v1.6.0) (2018-04-11)
 
