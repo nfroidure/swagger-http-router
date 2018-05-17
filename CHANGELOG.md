@@ -1,3 +1,13 @@
+<a name="1.6.2"></a>
+## [1.6.2](https://github.com/nfroidure/swagger-http-router/compare/v1.6.1...v1.6.2) (2018-05-17)
+
+
+### Bug Fixes
+
+* **Build:** Fix the Babel build for AWS Lambdas ([8be86c1](https://github.com/nfroidure/swagger-http-router/commit/8be86c1))
+
+
+
 <a name="1.6.1"></a>
 ## [1.6.1](https://github.com/nfroidure/swagger-http-router/compare/v1.6.0...v1.6.1) (2018-05-06)
 
