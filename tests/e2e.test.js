@@ -101,8 +101,9 @@ HTTP server closed
 
         const { stdout, stderr } = await shutdownPromise;
 
-        expect(stdout.toString()).toEqual(
-          `HTTP Server listening at "http://localhost:1337".
+        expect(trimLinesEnd(stdout.toString())).toEqual(
+          trimLinesEnd(
+            `HTTP Server listening at "http://localhost:1337".
 On air 🚀🌕
 { protocol: 'http',
   ip: '127.0.0.1',
@@ -111,7 +112,7 @@ On air 🚀🌕
   startTime: 1267833600000,
   url: '/v1/shutdown',
   method: 'POST',
-  reqHeaders:${' '}
+  reqHeaders:
    { host: '127.0.0.1:1337',
      'accept-encoding': 'gzip, deflate',
      connection: 'close',
@@ -124,9 +125,10 @@ On air 🚀🌕
   statusCode: 200,
   resHeaders: {} }
 `,
+          ),
         );
-        expect(stderr.toString()).toEqual(
-          `Logging service initialized.
+        expect(trimLinesEnd(stderr.toString())).toEqual(
+          trimLinesEnd(`Logging service initialized.
 Running in "development" environment.
 Process service initialized.
 Delay service initialized.
@@ -136,10 +138,15 @@ Created a delay: 30000
 Cleared a delay
 Closing HTTP server.
 HTTP server closed
-`,
+`),
         );
       },
       15000,
     );
   });
 });
+
+// Needed to avoid editor/cli small variations issues
+function trimLinesEnd(str) {
+  return str.replace(/\s+(\r?\n)/g, '$1');
+}
