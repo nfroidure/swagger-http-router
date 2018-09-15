@@ -52,7 +52,7 @@ HTTP router
 <a name="initErrorHandler..errorHandler"></a>
 
 ### initErrorHandler~errorHandler(transactionId, responseSpec, err) ⇒ <code>Promise</code>
-Handle an HTTP transaction error an
+Handle an HTTP transaction error and
 map it to a serializable response
 
 **Kind**: inner method of [<code>initErrorHandler</code>](#initErrorHandler)  

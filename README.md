@@ -35,36 +35,41 @@ import {
 import API from './swagger.api.json';
 import * as HANDLERS from './handlers';
 
-// STEP 1: Spawn a Knifecycle instance and attach
-// it the API definition and its handlers
-const $ = initWepApplication(API, HANDLERS);
+run();
 
-// STEP 2: Register additional services
-// Override the build in `uniqueId` service
-// with the UUID v4 function
-$.constant('uniqueId', uuid.v4)
-// Provide the process environment
-.constant('ENV', process.env)
-// Register the database initializer
-.register(initDB);
+async function run() {
+  try {
+    // STEP 1: Spawn a Knifecycle instance and attach
+    // it the API definition and its handlers
+    const $ = initWepApplication(API, HANDLERS);
 
-// STEP 3: Run your app!
-// Run the execution silo that encapsulates the app
-// Note that the `httpServer` and `process` services
-// are injected for their respective side effects:
-// creating the server and managing the process
-// lifecycle
-$.run(['ENV', 'log', 'httpServer', 'process', '$destroy'])
-.then(({ ENV, log, $destroy }) => {
-  log('info', `On air 🚀🌕`);
-  if(ENV.DRY_RUN) {
-    return $destroy();
+    // STEP 2: Register additional services
+    // Override the build in `uniqueId` service
+    // with the UUID v4 function
+    $.constant('uniqueId', uuid.v4)
+    // Provide the process environment
+    .constant('ENV', process.env)
+    // Register the database initializer
+    .register(initDB);
+
+    // STEP 3: Run your app!
+    // Run the execution silo that encapsulates the app
+    // Note that the `httpServer` and `process` services
+    // are injected for their respective side effects:
+    // creating the server and managing the process
+    // lifecycle
+    const { ENV, log, $destroy } = await $.run(['ENV', 'log', 'httpServer', 'process', '$destroy']);
+
+    log('info', `On air 🚀🌕`);
+
+    if(ENV.DRY_RUN) {
+      await $destroy();
+    }
+  } catch(err) {
+    console.error('💀 - Cannot launch the process:', err.stack);
+    process.exit(1);
   }
-})
-.catch((err) => {
-  console.error('💀 - Cannot launch the process:', err.stack);
-  process.exit(1);
-});
+)
 ```
 
 In order to work, your Swagger definition endpoints
@@ -134,26 +139,31 @@ To bring to the router the logic that each
 // which dependencies to inject in your handlers
 import { initializer } from 'knifecycle/dist/util';
 
-@initializer({
-  name: 'getUser',
-  type: 'service',
-  inject: ['db'],
-})
-export async function getUser({ db }) {
-  return ({ userId }) =>
-    db.query('users', {
+export default initializer(
+  {
+    name: 'getUser',
+    type: 'service',
+    inject: ['db'],
+  },
+  getUser
+);
+
+async function getUser({ db }) {
+  return async ({ userId }) => {
+    const user = await db.query('users', {
       id: userId,
-    })
-    .then(user => ({
+    });
+
+    return {
       status: 200,
       headers: {},
       body: {
         id: userId,
         name: user.name,
       }
-    }));
+    };
+  }
 }
-
 ```
 
 As you can see, handlers are just asynchronous functions

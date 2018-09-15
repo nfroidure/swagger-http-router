@@ -33,7 +33,7 @@ function initErrorHandler({
   return Promise.resolve(errorHandler);
 
   /**
-   * Handle an HTTP transaction error an
+   * Handle an HTTP transaction error and
    * map it to a serializable response
    * @param  {String}  transactionId
    * A raw NodeJS HTTP incoming message
