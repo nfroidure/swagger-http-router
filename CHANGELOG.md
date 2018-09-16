@@ -1,3 +1,13 @@
+<a name="1.6.3"></a>
+## [1.6.3](https://github.com/nfroidure/swagger-http-router/compare/v1.6.2...v1.6.3) (2018-09-16)
+
+
+### Bug Fixes
+
+* **Tests:** Fix meaningless failures between Node versions ([abab401](https://github.com/nfroidure/swagger-http-router/commit/abab401))
+
+
+
 <a name="1.6.2"></a>
 ## [1.6.2](https://github.com/nfroidure/swagger-http-router/compare/v1.6.1...v1.6.2) (2018-05-17)
 
