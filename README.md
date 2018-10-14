@@ -27,6 +27,7 @@ By taking part of the Swagger/OpenAPI standard and
 
 ## Usage
 ```js
+import { constant } from 'knifecycle';
 import initDB from './services/db';
 import {
   initWepApplication
@@ -46,9 +47,9 @@ async function run() {
     // STEP 2: Register additional services
     // Override the build in `uniqueId` service
     // with the UUID v4 function
-    $.constant('uniqueId', uuid.v4)
+    $.register(constant('uniqueId', uuid.v4))
     // Provide the process environment
-    .constant('ENV', process.env)
+    .register(constant('ENV', process.env))
     // Register the database initializer
     .register(initDB);
 

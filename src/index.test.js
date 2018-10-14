@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import assert from 'assert';
 import supertest from 'supertest';
 
-import { initializer, Knifecycle } from 'knifecycle';
+import Knifecycle, { initializer, constant } from 'knifecycle';
 import { initWepApplication } from '../src';
 
 import API from '../fixtures/swagger.api.json';
@@ -110,10 +110,10 @@ describe('initWepApplication', () => {
   beforeEach(() => {
     $ = new Knifecycle();
     initWepApplication(API, HANDLERS, $);
-    $.constant('db', { query: sinon.stub() });
-    $.constant('log', sinon.stub());
-    $.constant('ENV', { PORT: 1664, HOST: 'localhost' });
-    $.constant('time', sinon.stub().returns(1337));
+    $.register(constant('db', { query: sinon.stub() }));
+    $.register(constant('log', sinon.stub()));
+    $.register(constant('ENV', { PORT: 1664, HOST: 'localhost' }));
+    $.register(constant('time', sinon.stub().returns(1337)));
   });
 
   describe('with a few routes', () => {
@@ -186,6 +186,7 @@ describe('initWepApplication', () => {
         ['debug', 'Cleared a delay'],
         ['debug', 'Closing HTTP server.'],
         ['debug', 'HTTP server closed'],
+        ['debug', 'Cancelling pending timeouts:', 0],
       ]);
     });
   });

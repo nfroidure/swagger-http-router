@@ -1,4 +1,4 @@
-import { getInstance, initializer } from 'knifecycle';
+import { getInstance, initializer, constant } from 'knifecycle';
 import {
   initLogService,
   initTimeService,
@@ -109,19 +109,21 @@ export function initWepApplication(API, HANDLERS, $ = getInstance()) {
 
   registerHandlers($, HANDLERS);
 
-  $.constant(
-    'ENV',
-    Object.assign(
-      {
-        NODE_ENV: 'development',
-        HOST: API.host.split(':')[0],
-        PORT: API.host.split(':')[1] || 80,
-      },
-      process.env,
+  $.register(
+    constant(
+      'ENV',
+      Object.assign(
+        {
+          NODE_ENV: 'development',
+          HOST: API.host.split(':')[0],
+          PORT: API.host.split(':')[1] || 80,
+        },
+        process.env,
+      ),
     ),
   );
-  $.constant('exit', process.exit);
-  $.constant('API', API);
+  $.register(constant('exit', process.exit));
+  $.register(constant('API', API));
 
   return $;
 }

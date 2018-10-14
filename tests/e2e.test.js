@@ -36,14 +36,15 @@ On air 🚀🌕
         assert.equal(
           stderr.toString(),
           `Logging service initialized.
-Running in "development" environment.
-Process service initialized.
 Time service initialized.
 Delay service initialized.
+Running in "development" environment.
+Process service initialized.
 HTTP Transaction initialized.
 HTTP Router initialized.
 Closing HTTP server.
 HTTP server closed
+Cancelling pending timeouts: 0
 `,
         );
       },
@@ -129,15 +130,16 @@ On air 🚀🌕
         );
         expect(trimLinesEnd(stderr.toString())).toEqual(
           trimLinesEnd(`Logging service initialized.
+Delay service initialized.
 Running in "development" environment.
 Process service initialized.
-Delay service initialized.
 HTTP Transaction initialized.
 HTTP Router initialized.
 Created a delay: 30000
 Cleared a delay
 Closing HTTP server.
 HTTP server closed
+Cancelling pending timeouts: 0
 `),
         );
       },

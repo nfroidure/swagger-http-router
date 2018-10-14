@@ -1,18 +1,20 @@
-import { Knifecycle, initializer } from 'knifecycle';
+import Knifecycle, { initializer, constant } from 'knifecycle';
 import { initWepApplication } from '../src';
 
 const $ = new Knifecycle();
 
 // eslint-disable-next-line
-$.constant('debug', console.error.bind(console));
-$.constant('logger', {
-  // eslint-disable-next-line
-  error: console.error.bind(console),
-  // eslint-disable-next-line
-  info: console.info.bind(console),
-  // eslint-disable-next-line
-  warning: console.log.bind(console),
-});
+$.register(constant('debug', console.error.bind(console)));
+$.register(
+  constant('logger', {
+    // eslint-disable-next-line
+    error: console.error.bind(console),
+    // eslint-disable-next-line
+    info: console.info.bind(console),
+    // eslint-disable-next-line
+    warning: console.log.bind(console),
+  }),
+);
 
 const API = {
   host: 'localhost:1337',
