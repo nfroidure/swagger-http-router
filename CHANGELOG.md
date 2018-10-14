@@ -1,3 +1,13 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/nfroidure/swagger-http-router/compare/v1.6.3...v2.0.0) (2018-10-14)
+
+
+### Bug Fixes
+
+* **httpTransaction:** Repair error casting when YHTTPError instances are different ([ed99b8f](https://github.com/nfroidure/swagger-http-router/commit/ed99b8f))
+
+
+
 <a name="1.6.3"></a>
 ## [1.6.3](https://github.com/nfroidure/swagger-http-router/compare/v1.6.2...v1.6.3) (2018-09-16)
 

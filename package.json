@@ -1,6 +1,6 @@
 {
   "name": "swagger-http-router",
-  "version": "1.6.3",
+  "version": "2.0.0",
   "description": "A HTTP router based on your Swagger/OpenAPI definition.",
   "keywords": [
     "Swagger",
