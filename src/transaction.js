@@ -210,7 +210,7 @@ function initHTTPTransaction({
      ending the transaction properly if an error
      occurs.
     */
-    err = HTTPError.cast(err);
+    err = HTTPError.cast(err, err.httpCode || 500);
     log('error', 'An error occured', {
       guruMeditation: id,
       request:
