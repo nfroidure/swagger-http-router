@@ -11,7 +11,7 @@ The `httpServer` service is responsible for instanciating
 export default initializer(
   {
     name: 'httpServer',
-    inject: ['ENV', 'httpRouter', '?log'],
+    inject: ['?ENV', '?HOST', '?PORT', 'httpRouter', '?log'],
   },
   initHTTPServer,
 );
@@ -22,6 +22,10 @@ export default initializer(
  * The services the server depends on
  * @param  {Object}   services.ENV
  * The process environment variables
+ * @param  {Object}   services.HOST
+ * The server host
+ * @param  {Object}   services.PORT
+ * The server port
  * @param  {Function} services.httpRouter
  * The function to run with the req/res tuple
  * @param  {Function} [services.log=noop]
@@ -30,12 +34,18 @@ export default initializer(
  * A promise of an object with a NodeJS HTTP server
  *  in its `service` property.
  */
-async function initHTTPServer({ ENV, httpRouter, log = noop }) {
+async function initHTTPServer({
+  ENV = {},
+  HOST = '127.0.0.1',
+  PORT = 8080,
+  httpRouter,
+  log = noop,
+}) {
   const sockets = ENV.DESTROY_SOCKETS ? new Set() : {}.undef;
   const httpServer = http.createServer(httpRouter);
   const listenPromise = new Promise(resolve => {
-    httpServer.listen(parseInt(ENV.PORT, 10), ENV.HOST, () => {
-      log('info', `HTTP Server listening at "http://${ENV.HOST}:${ENV.PORT}".`);
+    httpServer.listen(PORT, HOST, () => {
+      log('info', `HTTP Server listening at "http://${HOST}:${PORT}".`);
       resolve(httpServer);
     });
   });

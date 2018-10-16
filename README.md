@@ -509,10 +509,6 @@ HTTP router</p>
 <dt><a href="#initWepApplication">initWepApplication(API, HANDLERS, [$])</a> ⇒ <code>Knifecycle</code></dt>
 <dd><p>Initialize a web application</p>
 </dd>
-<dt><a href="#registerHandlers">registerHandlers($, HANDLERS)</a> ⇒ <code>void</code></dt>
-<dd><p>Register the handlers hash into the given Knifecycle
- instance</p>
-</dd>
 <dt><a href="#initHTTPRouter">initHTTPRouter(services)</a> ⇒ <code>Promise</code></dt>
 <dd><p>Initialize an HTTP router</p>
 </dd>
@@ -580,19 +576,6 @@ Initialize a web application
 | HANDLERS | <code>Object</code> |  | The handlers for each operations defined by the  Swagger definition. |
 | [$] | <code>Knifecycle</code> | <code>getInstance(</code> | A Knifecycle instance on which to set the application  up. |
 
-<a name="registerHandlers"></a>
-
-## registerHandlers($, HANDLERS) ⇒ <code>void</code>
-Register the handlers hash into the given Knifecycle
- instance
-
-**Kind**: global function  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| $ | <code>Knifecycle</code> | The Knifecycle instance on which to set up the handlers |
-| HANDLERS | <code>Object</code> | The handlers hash |
-
 <a name="initHTTPRouter"></a>
 
 ## initHTTPRouter(services) ⇒ <code>Promise</code>
@@ -630,6 +613,8 @@ Initialize an HTTP server
 | --- | --- | --- | --- |
 | services | <code>Object</code> |  | The services the server depends on |
 | services.ENV | <code>Object</code> |  | The process environment variables |
+| services.HOST | <code>Object</code> |  | The server host |
+| services.PORT | <code>Object</code> |  | The server port |
 | services.httpRouter | <code>function</code> |  | The function to run with the req/res tuple |
 | [services.log] | <code>function</code> | <code>noop</code> | A logging function |
 

@@ -1,4 +1,4 @@
-import { getInstance, initializer, constant } from 'knifecycle';
+import Knifecycle, { constant } from 'knifecycle';
 import {
   initLogService,
   initTimeService,
@@ -94,7 +94,7 @@ export {
  * The passed in Knifecycle instance or the one created
  *  by default.
  */
-export function initWepApplication(API, HANDLERS, $ = getInstance()) {
+export function initWepApplication($ = new Knifecycle()) {
   [
     initLogService,
     initTimeService,
@@ -107,49 +107,8 @@ export function initWepApplication(API, HANDLERS, $ = getInstance()) {
     initHTTPServer,
   ].forEach($.register.bind($));
 
-  registerHandlers($, HANDLERS);
-
-  $.register(
-    constant(
-      'ENV',
-      Object.assign(
-        {
-          NODE_ENV: 'development',
-          HOST: API.host.split(':')[0],
-          PORT: API.host.split(':')[1] || 80,
-        },
-        process.env,
-      ),
-    ),
-  );
+  $.register(constant('NODE_ENV', process.env.NODE_ENV || 'development'));
   $.register(constant('exit', process.exit));
-  $.register(constant('API', API));
 
   return $;
-}
-
-/**
- * Register the handlers hash into the given Knifecycle
- *  instance
- * @param  {Knifecycle}    $
- * The Knifecycle instance on which to set up the handlers
- * @param  {Object}        HANDLERS
- * The handlers hash
- * @return {void}
- */
-export function registerHandlers($, HANDLERS) {
-  Object.keys(HANDLERS).forEach(handlerName => {
-    $.register(HANDLERS[handlerName]);
-  });
-
-  $.register(
-    initializer(
-      {
-        name: 'HANDLERS',
-        type: 'service',
-        inject: Object.keys(HANDLERS),
-      },
-      handlers => Promise.resolve(handlers),
-    ),
-  );
 }

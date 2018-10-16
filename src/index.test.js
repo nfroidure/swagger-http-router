@@ -13,50 +13,45 @@ const HANDLERS = {
       name: 'ping',
       type: 'service',
     },
-    () =>
-      Promise.resolve(() => ({
-        status: 200,
-      })),
+    async () => async () => ({
+      status: 200,
+    }),
   ),
   headUserAvatar: initializer(
     {
       name: 'headUserAvatar',
       type: 'service',
     },
-    () =>
-      Promise.resolve(() => ({
-        status: 200,
-      })),
+    async () => async () => ({
+      status: 200,
+    }),
   ),
   getUserAvatar: initializer(
     {
       name: 'getUserAvatar',
       type: 'service',
     },
-    () =>
-      Promise.resolve(() => ({
-        status: 200,
-      })),
+    async () => async () => ({
+      status: 200,
+    }),
   ),
   putUserAvatar: initializer(
     {
       name: 'putUserAvatar',
       type: 'service',
     },
-    () =>
-      Promise.resolve(() => ({
-        status: 200,
-      })),
+    async () => async () => ({
+      status: 200,
+    }),
   ),
   deleteUserAvatar: initializer(
     {
       name: 'deleteUserAvatar',
       type: 'service',
     },
-    () =>
-      Promise.resolve(() => ({
-        status: 200,
-      })),
+    async () => async () => ({
+      status: 200,
+    }),
   ),
   getUser: initializer(
     {
@@ -64,21 +59,20 @@ const HANDLERS = {
       type: 'service',
       inject: ['db'],
     },
-    ({ db }) =>
-      Promise.resolve(({ userId }) =>
-        db
-          .query('users', {
-            id: userId,
-          })
-          .then(user => ({
-            status: 200,
-            headers: {},
-            body: {
-              id: userId,
-              name: user.name,
-            },
-          })),
-      ),
+    async ({ db }) => async ({ userId }) => {
+      const user = await db.query('users', {
+        id: userId,
+      });
+
+      return {
+        status: 200,
+        headers: {},
+        body: {
+          id: userId,
+          name: user.name,
+        },
+      };
+    },
   ),
   putUser: initializer(
     {
@@ -109,17 +103,38 @@ describe('initWepApplication', () => {
 
   beforeEach(() => {
     $ = new Knifecycle();
-    initWepApplication(API, HANDLERS, $);
+    $.register(
+      constant('ENV', {
+        NODE_ENV: 'development',
+      }),
+    );
+    $.register(constant('API', API));
+    $.register(
+      initializer(
+        {
+          name: 'HANDLERS',
+          type: 'service',
+          inject: Object.keys(HANDLERS),
+        },
+        async HANDLERS => HANDLERS,
+      ),
+    );
+    Object.keys(HANDLERS)
+      .map(name => HANDLERS[name])
+      .forEach($.register.bind($));
+    initWepApplication($);
     $.register(constant('db', { query: sinon.stub() }));
     $.register(constant('log', sinon.stub()));
-    $.register(constant('ENV', { PORT: 1664, HOST: 'localhost' }));
+    $.register(constant('PORT', 1664));
+    $.register(constant('HOST', 'localhost'));
     $.register(constant('time', sinon.stub().returns(1337)));
   });
 
   describe('with a few routes', () => {
     test('should work as expected', async () => {
-      const { ENV, log, db, $destroy } = await $.run([
-        'ENV',
+      const { HOST, PORT, log, db, $destroy } = await $.run([
+        'HOST',
+        'PORT',
         'log',
         'db',
         'httpServer',
@@ -133,7 +148,7 @@ describe('initWepApplication', () => {
       );
 
       await new Promise((resolve, reject) => {
-        supertest(`http://${ENV.HOST}:${ENV.PORT}`)
+        supertest(`http://${HOST}:${PORT}`)
           .get('/v1/users/1?extended=false')
           .unset('User-Agent')
           .expect(200)

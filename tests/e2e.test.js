@@ -87,7 +87,7 @@ Cancelling pending timeouts: 0
 
         await serverPromise;
         await new Promise((resolve, reject) => {
-          supertest('http://127.0.0.1:1337')
+          supertest('http://127.0.0.1:1338')
             .post('/v1/shutdown')
             .unset('User-Agent')
             .expect(200)
@@ -104,7 +104,7 @@ Cancelling pending timeouts: 0
 
         expect(trimLinesEnd(stdout.toString())).toEqual(
           trimLinesEnd(
-            `HTTP Server listening at "http://localhost:1337".
+            `HTTP Server listening at "http://localhost:1338".
 On air 🚀🌕
 { protocol: 'http',
   ip: '127.0.0.1',
@@ -114,7 +114,7 @@ On air 🚀🌕
   url: '/v1/shutdown',
   method: 'POST',
   reqHeaders:
-   { host: '127.0.0.1:1337',
+   { host: '127.0.0.1:1338',
      'accept-encoding': 'gzip, deflate',
      connection: 'close',
      'content-length': '0' },
