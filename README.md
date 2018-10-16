@@ -14,6 +14,7 @@
 [![Coverage Status](https://coveralls.io/repos/nfroidure/swagger-http-router/badge.svg?branch=master)](https://coveralls.io/r/nfroidure/swagger-http-router?branch=master)
 [![Code Climate](https://codeclimate.com/github/nfroidure/swagger-http-router.svg)](https://codeclimate.com/github/nfroidure/swagger-http-router)
 [![Dependency Status](https://dependencyci.com/github/nfroidure/swagger-http-router/badge)](https://dependencyci.com/github/nfroidure/swagger-http-router)
+[![Package Quality](http://npm.packagequality.com/shield/swagger-http-router.svg)](http://packagequality.com/#?package=swagger-http-router)
 
 
 [//]: # (::contents:start)
@@ -695,6 +696,9 @@ getSwaggerOperations(API)
   // Do something with that operation
 });
 ```
+
+# Authors
+- [Nicolas Froidure](http://insertafter.com/en/index.html)
 
 # License
 [MIT](https://github.com/nfroidure/swagger-http-router/blob/master/LICENSE)

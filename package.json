@@ -12,6 +12,7 @@
   "main": "dist/index.js",
   "metapak": {
     "configs": [
+      "main",
       "jsarch",
       "readme",
       "travis",
@@ -42,8 +43,9 @@
     "lint": "eslint src/*.js tests/*.js",
     "metapak": "metapak",
     "mocha": "mocha src/*.mocha.js tests/*.mocha.js",
+    "precz": "npm t && npm run lint && npm run metapak -- -s",
     "prettier": "prettier --write src/*.js tests/*.js",
-    "preversion": "npm t && npm run lint && npm run metapak -s && npm run compile",
+    "preversion": "npm t && npm run lint && npm run compile && npm run metapak -- -s",
     "test": "npm run jest",
     "version": "npm run changelog && git add CHANGELOG.md"
   },
@@ -51,7 +53,11 @@
     "type": "git",
     "url": "git+https://github.com/nfroidure/swagger-http-router.git"
   },
-  "author": "Nicolas Froidure",
+  "author": {
+    "name": "Nicolas Froidure",
+    "email": "nicolas.froidure@insertafter.com",
+    "url": "http://insertafter.com/en/index.html"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nfroidure/swagger-http-router/issues"
@@ -95,9 +101,9 @@
     "jsarch": "^1.3.0",
     "jsdoc-to-markdown": "^4.0.1",
     "metapak": "^1.0.3",
-    "metapak-nfroidure": "^6.3.0",
+    "metapak-nfroidure": "^7.1.2",
     "prettier": "^1.14.2",
-    "sinon": "^6.3.3",
+    "sinon": "^7.0.0",
     "streamtest": "^1.2.4",
     "supertest": "^3.3.0"
   },
@@ -145,5 +151,6 @@
     "testPathIgnorePatterns": [
       "/node_modules/"
     ]
-  }
+  },
+  "contributors": []
 }
