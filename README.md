@@ -616,6 +616,10 @@ Initialize an HTTP server
 | services.ENV | <code>Object</code> |  | The process environment variables |
 | services.HOST | <code>Object</code> |  | The server host |
 | services.PORT | <code>Object</code> |  | The server port |
+| services.MAX_HEADERS_COUNT | <code>Object</code> |  | The https://nodejs.org/api/http.html#http_server_maxheaderscount |
+| services.KEEP_ALIVE_TIMEOUT | <code>Object</code> |  | See https://nodejs.org/api/http.html#http_server_keepalivetimeout |
+| services.MAX_CONNECTIONS | <code>Object</code> |  | See https://nodejs.org/api/net.html#net_server_maxconnections |
+| services.TIMEOUT | <code>Object</code> |  | See https://nodejs.org/api/http.html#http_server_timeout |
 | services.httpRouter | <code>function</code> |  | The function to run with the req/res tuple |
 | [services.log] | <code>function</code> | <code>noop</code> | A logging function |
 

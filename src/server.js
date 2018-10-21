@@ -1,5 +1,6 @@
 import { initializer } from 'knifecycle';
 import http from 'http';
+import ms from 'ms';
 
 function noop() {}
 
@@ -11,7 +12,17 @@ The `httpServer` service is responsible for instanciating
 export default initializer(
   {
     name: 'httpServer',
-    inject: ['?ENV', '?HOST', '?PORT', 'httpRouter', '?log'],
+    inject: [
+      '?ENV',
+      '?HOST',
+      '?PORT',
+      '?MAX_HEADERS_COUNT',
+      '?KEEP_ALIVE_TIMEOUT',
+      '?MAX_CONNECTIONS',
+      '?TIMEOUT',
+      'httpRouter',
+      '?log',
+    ],
   },
   initHTTPServer,
 );
@@ -26,6 +37,14 @@ export default initializer(
  * The server host
  * @param  {Object}   services.PORT
  * The server port
+ * @param  {Object}   services.MAX_HEADERS_COUNT
+ * The https://nodejs.org/api/http.html#http_server_maxheaderscount
+ * @param  {Object}   services.KEEP_ALIVE_TIMEOUT
+ * See https://nodejs.org/api/http.html#http_server_keepalivetimeout
+ * @param  {Object}   services.MAX_CONNECTIONS
+ * See https://nodejs.org/api/net.html#net_server_maxconnections
+ * @param  {Object}   services.TIMEOUT
+ * See https://nodejs.org/api/http.html#http_server_timeout
  * @param  {Function} services.httpRouter
  * The function to run with the req/res tuple
  * @param  {Function} [services.log=noop]
@@ -38,6 +57,10 @@ async function initHTTPServer({
   ENV = {},
   HOST = '127.0.0.1',
   PORT = 8080,
+  MAX_HEADERS_COUNT = 800,
+  KEEP_ALIVE_TIMEOUT = ms('5m'),
+  TIMEOUT = ms('2m'),
+  MAX_CONNECTIONS,
   httpRouter,
   log = noop,
 }) {
@@ -52,6 +75,15 @@ async function initHTTPServer({
   const errorPromise = new Promise((resolve, reject) => {
     httpServer.once('error', reject);
   });
+
+  httpServer.timeout = TIMEOUT;
+  httpServer.keepAliveTimeout = KEEP_ALIVE_TIMEOUT;
+  httpServer.maxHeadersCount = MAX_HEADERS_COUNT;
+  httpServer.maxConnections = MAX_CONNECTIONS;
+
+  if ('undefined' !== typeof MAX_CONNECTIONS) {
+    httpServer.maxConnections = MAX_CONNECTIONS;
+  }
 
   if (ENV.DESTROY_SOCKETS) {
     httpServer.on('connection', socket => {
@@ -69,7 +101,8 @@ async function initHTTPServer({
       new Promise((resolve, reject) => {
         log('debug', 'Closing HTTP server.');
         // Avoid to keepalive connections on shutdown
-        http.globalAgent.keepAlive = false;
+        httpServer.timeout = 1;
+        httpServer.keepAliveTimeout = 1;
         httpServer.close(err => {
           if (err) {
             reject(err);

@@ -73,6 +73,7 @@
     "debug": "4.1.0",
     "first-chunk-stream": "^2.0.0",
     "knifecycle": "^3.1.0",
+    "ms": "^2.1.1",
     "negotiator": "^0.6.1",
     "qs": "^6.5.2",
     "siso": "^2.2.1",
