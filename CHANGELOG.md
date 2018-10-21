@@ -1,3 +1,23 @@
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/nfroidure/swagger-http-router/compare/v2.0.0...v3.0.0) (2018-10-21)
+
+
+### Code Refactoring
+
+* **HTTPServer:** Avoid picking HOST/PORT in ENV ([58beb67](https://github.com/nfroidure/swagger-http-router/commit/58beb67)), closes [#8](https://github.com/nfroidure/swagger-http-router/issues/8)
+
+
+### Features
+
+* **httpServer:** Add new HTTP server options ([cfb01c5](https://github.com/nfroidure/swagger-http-router/commit/cfb01c5))
+
+
+### BREAKING CHANGES
+
+* **HTTPServer:** The HOST/PORT constants must now be set instead of setting it to ENV.
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/nfroidure/swagger-http-router/compare/v1.6.3...v2.0.0) (2018-10-14)
 
