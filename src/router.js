@@ -308,7 +308,7 @@ function initHTTPRouter({
                   log(
                     'warning',
                     'Body stripped:',
-                    response.body instanceof Stream ? response.body : 'Stream',
+                    response.body instanceof Stream ? 'Stream' : response.body,
                   );
                   return Object.keys(response)
                     .filter(key => 'body' !== key)

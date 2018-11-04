@@ -7,14 +7,14 @@
 # swagger-http-router
 > A HTTP router based on your Swagger/OpenAPI definition.
 
-[![NPM version](https://badge.fury.io/js/swagger-http-router.svg)](https://npmjs.org/package/swagger-http-router)
 [![Build status](https://secure.travis-ci.org/nfroidure/swagger-http-router.svg)](https://travis-ci.org/nfroidure/swagger-http-router)
+[![Coverage Status](https://coveralls.io/repos/nfroidure/swagger-http-router/badge.svg?branch=master)](https://coveralls.io/r/nfroidure/swagger-http-router?branch=master)
+[![NPM version](https://badge.fury.io/js/swagger-http-router.svg)](https://npmjs.org/package/swagger-http-router)
 [![Dependency Status](https://david-dm.org/nfroidure/swagger-http-router.svg)](https://david-dm.org/nfroidure/swagger-http-router)
 [![devDependency Status](https://david-dm.org/nfroidure/swagger-http-router/dev-status.svg)](https://david-dm.org/nfroidure/swagger-http-router#info=devDependencies)
-[![Coverage Status](https://coveralls.io/repos/nfroidure/swagger-http-router/badge.svg?branch=master)](https://coveralls.io/r/nfroidure/swagger-http-router?branch=master)
-[![Code Climate](https://codeclimate.com/github/nfroidure/swagger-http-router.svg)](https://codeclimate.com/github/nfroidure/swagger-http-router)
 [![Dependency Status](https://dependencyci.com/github/nfroidure/swagger-http-router/badge)](https://dependencyci.com/github/nfroidure/swagger-http-router)
 [![Package Quality](http://npm.packagequality.com/shield/swagger-http-router.svg)](http://packagequality.com/#?package=swagger-http-router)
+[![Code Climate](https://codeclimate.com/github/nfroidure/swagger-http-router.svg)](https://codeclimate.com/github/nfroidure/swagger-http-router)
 
 
 [//]: # (::contents:start)
