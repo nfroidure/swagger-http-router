@@ -1,3 +1,17 @@
+# [4.0.0](https://github.com/nfroidure/swagger-http-router/compare/v3.0.0...v4.0.0) (2018-11-04)
+
+
+### chore
+
+* **Dependencies:** Update dependencies ([e34c7f8](https://github.com/nfroidure/swagger-http-router/commit/e34c7f8))
+
+
+### BREAKING CHANGES
+
+* **Dependencies:** Drop support for Node < 8
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/nfroidure/swagger-http-router/compare/v2.0.0...v3.0.0) (2018-10-21)
 
