@@ -1,3 +1,17 @@
+# [4.1.0](https://github.com/nfroidure/swagger-http-router/compare/v4.0.0...v4.1.0) (2018-11-11)
+
+
+### Bug Fixes
+
+* **httpRouter:** Avoid mutating the injected API object ([7ff3eb8](https://github.com/nfroidure/swagger-http-router/commit/7ff3eb8)), closes [#9](https://github.com/nfroidure/swagger-http-router/issues/9)
+
+
+### Features
+
+* **httpRouter:** Add some more check to the API definition ([d295b95](https://github.com/nfroidure/swagger-http-router/commit/d295b95)), closes [#6](https://github.com/nfroidure/swagger-http-router/issues/6) [#7](https://github.com/nfroidure/swagger-http-router/issues/7)
+
+
+
 # [4.0.0](https://github.com/nfroidure/swagger-http-router/compare/v3.0.0...v4.0.0) (2018-11-04)
 
 
