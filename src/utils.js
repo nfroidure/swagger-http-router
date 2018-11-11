@@ -11,7 +11,9 @@ import SwaggerParser from 'swagger-parser';
 export function flattenSwagger(API) {
   const parser = new SwaggerParser();
 
-  return parser.dereference(API);
+  // Currently the Swagger parser changes the API in place
+  //  this is why we're deep cloning it here
+  return parser.dereference(JSON.parse(JSON.stringify(API)));
 }
 
 /**

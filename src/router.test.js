@@ -30,13 +30,12 @@ function waitResponse(response, raw) {
 }
 
 function prepareTransaction(result) {
-  const handler = jest.fn(
-    () =>
-      null === result
-        ? {}.undef
-        : result
-          ? Promise.resolve(result)
-          : Promise.reject(new YError('E_NOT_SUPPOSED_TO_BE_HERE')),
+  const handler = jest.fn(() =>
+    null === result
+      ? {}.undef
+      : result
+      ? Promise.resolve(result)
+      : Promise.reject(new YError('E_NOT_SUPPOSED_TO_BE_HERE')),
   );
   const httpTransactionStart = jest.fn(async buildResponse => buildResponse());
   const httpTransactionCatch = jest.fn(async err => {

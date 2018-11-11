@@ -24,8 +24,8 @@ function ensureString(str) {
   return 'undefined' === typeof str
     ? ''
     : 'string' === typeof str
-      ? str
-      : JSON.stringify(str);
+    ? str
+    : JSON.stringify(str);
 }
 
 function identity(me) {

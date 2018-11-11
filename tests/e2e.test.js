@@ -6,36 +6,34 @@ import supertest from 'supertest';
 
 describe('swagger-http-router', () => {
   describe('with a dry run', () => {
-    test(
-      'should work',
-      async () => {
-        const { stdout, stderr } = await new Promise((resolve, reject) => {
-          exec(
-            'babel-node ' + path.join(__dirname, 'dry-run.js'),
-            {
-              env: Object.assign({}, process.env, {
-                NODE_ENV: 'development',
-                DRY_RUN: 1,
-              }),
-            },
-            (err, stdout, stderr) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve({ stdout, stderr });
-            },
-          );
-        });
-        assert.equal(
-          stdout.toString(),
-          `HTTP Server listening at "http://localhost:1337".
+    test('should work', async () => {
+      const { stdout, stderr } = await new Promise((resolve, reject) => {
+        exec(
+          'babel-node ' + path.join(__dirname, 'dry-run.js'),
+          {
+            env: Object.assign({}, process.env, {
+              NODE_ENV: 'development',
+              DRY_RUN: 1,
+            }),
+          },
+          (err, stdout, stderr) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve({ stdout, stderr });
+          },
+        );
+      });
+      assert.equal(
+        stdout.toString(),
+        `HTTP Server listening at "http://localhost:1337".
 On air 🚀🌕
 `,
-        );
-        assert.equal(
-          stderr.toString(),
-          `Logging service initialized.
+      );
+      assert.equal(
+        stderr.toString(),
+        `Logging service initialized.
 Time service initialized.
 Delay service initialized.
 Running in "development" environment.
@@ -46,65 +44,61 @@ Closing HTTP server.
 HTTP server closed
 Cancelling pending timeouts: 0
 `,
-        );
-      },
-      15000,
-    );
+      );
+    }, 15000);
   });
 
   describe('with a remote call', () => {
-    test(
-      'should work',
-      async () => {
-        let resolveServerPromise;
+    test('should work', async () => {
+      let resolveServerPromise;
 
-        const serverPromise = new Promise(resolve => {
-          resolveServerPromise = resolve;
-        });
+      const serverPromise = new Promise(resolve => {
+        resolveServerPromise = resolve;
+      });
 
-        const shutdownPromise = new Promise((resolve, reject) => {
-          exec(
-            'babel-node ' + path.join(__dirname, 'remote-shutdown.js'),
-            {
-              env: Object.assign({}, process.env, {
-                NODE_ENV: 'development',
-                DESTROY_SOCKETS: 1,
-              }),
-            },
-            (err, stdout, stderr) => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve({ stdout, stderr });
-            },
-          ).stdout.on('data', data => {
-            if (data.toString().includes('listening')) {
-              resolveServerPromise();
+      const shutdownPromise = new Promise((resolve, reject) => {
+        exec(
+          'babel-node ' + path.join(__dirname, 'remote-shutdown.js'),
+          {
+            env: Object.assign({}, process.env, {
+              NODE_ENV: 'development',
+              DESTROY_SOCKETS: 1,
+            }),
+          },
+          (err, stdout, stderr) => {
+            if (err) {
+              reject(err);
+              return;
             }
+            resolve({ stdout, stderr });
+          },
+        ).stdout.on('data', data => {
+          if (data.toString().includes('listening')) {
+            resolveServerPromise();
+          }
+        });
+      });
+
+      await serverPromise;
+      await new Promise((resolve, reject) => {
+        supertest('http://127.0.0.1:1338')
+          .post('/v1/shutdown')
+          .unset('User-Agent')
+          .expect(200)
+          .end(err => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve();
           });
-        });
+      });
 
-        await serverPromise;
-        await new Promise((resolve, reject) => {
-          supertest('http://127.0.0.1:1338')
-            .post('/v1/shutdown')
-            .unset('User-Agent')
-            .expect(200)
-            .end(err => {
-              if (err) {
-                reject(err);
-                return;
-              }
-              resolve();
-            });
-        });
+      const { stdout, stderr } = await shutdownPromise;
 
-        const { stdout, stderr } = await shutdownPromise;
-
-        expect(trimLinesEnd(stdout.toString())).toEqual(
-          trimLinesEnd(
-            `HTTP Server listening at "http://localhost:1338".
+      expect(trimLinesEnd(stdout.toString())).toEqual(
+        trimLinesEnd(
+          `HTTP Server listening at "http://localhost:1338".
 On air 🚀🌕
 { protocol: 'http',
   ip: '127.0.0.1',
@@ -126,10 +120,10 @@ On air 🚀🌕
   statusCode: 200,
   resHeaders: {} }
 `,
-          ),
-        );
-        expect(trimLinesEnd(stderr.toString())).toEqual(
-          trimLinesEnd(`Logging service initialized.
+        ),
+      );
+      expect(trimLinesEnd(stderr.toString())).toEqual(
+        trimLinesEnd(`Logging service initialized.
 Delay service initialized.
 Running in "development" environment.
 Process service initialized.
@@ -141,10 +135,8 @@ Closing HTTP server.
 HTTP server closed
 Cancelling pending timeouts: 0
 `),
-        );
-      },
-      15000,
-    );
+      );
+    }, 15000);
   });
 });
 
