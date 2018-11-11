@@ -208,6 +208,80 @@ describe('initHTTPRouter', () => {
         assert.equal(err.code, 'E_NO_HANDLER');
       }
     });
+
+    test('when an operation has no name', async () => {
+      try {
+        const errorHandler = await initErrorHandler({});
+        let { httpTransaction, HANDLERS } = prepareTransaction();
+
+        await initHTTPRouter({
+          HANDLERS,
+          API: {
+            host: API.host,
+            swagger: API.swagger,
+            info: API.info,
+            basePath: API.basePath,
+            schemes: API.schemes,
+            paths: {
+              '/lol': {
+                get: {
+                  operationId: 'ping',
+                  parameters: [
+                    {
+                      in: 'query',
+                      type: 'string',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          log,
+          httpTransaction,
+          errorHandler,
+        });
+        throw new YError('E_UNEXPECTED_SUCCESS');
+      } catch (err) {
+        assert.equal(err.code, 'E_BAD_PARAMETER_NAME');
+      }
+    });
+
+    test('when an operation has no in value', async () => {
+      try {
+        const errorHandler = await initErrorHandler({});
+        let { httpTransaction, HANDLERS } = prepareTransaction();
+
+        await initHTTPRouter({
+          HANDLERS,
+          API: {
+            host: API.host,
+            swagger: API.swagger,
+            info: API.info,
+            basePath: API.basePath,
+            schemes: API.schemes,
+            paths: {
+              '/lol': {
+                get: {
+                  operationId: 'ping',
+                  parameters: [
+                    {
+                      name: 'lol',
+                      type: 'string',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          log,
+          httpTransaction,
+          errorHandler,
+        });
+        throw new YError('E_UNEXPECTED_SUCCESS');
+      } catch (err) {
+        assert.equal(err.code, 'E_BAD_PARAMETER_IN');
+      }
+    });
   });
 
   describe('httpRouter', () => {

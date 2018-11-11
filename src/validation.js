@@ -1,4 +1,5 @@
 import camelCase from 'camel-case';
+import YError from 'yerror';
 import HTTPError from 'yhttperror';
 
 /* Architecture Note #2.1: Validators
@@ -33,15 +34,22 @@ export function prepareValidators(ajv, operation) {
   return (operation.parameters || []).reduce((validators, parameter) => {
     let schema;
 
+    if ('string' !== typeof parameter.name) {
+      throw new YError('E_BAD_PARAMETER_NAME', operation.operationId);
+    }
+
     if (['query', 'header', 'path'].includes(parameter.in)) {
       schema = {
         type: parameter.type,
         format: parameter.format,
         pattern: parameter.pattern,
       };
-    } else {
+    } else if ('body' === parameter.in) {
       schema = parameter.schema;
+    } else {
+      throw new YError('E_BAD_PARAMETER_IN', operation.operationId);
     }
+
     validators[parameter.name] = _validateParameter.bind(
       null,
       parameter,
