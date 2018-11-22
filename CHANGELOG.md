@@ -1,3 +1,12 @@
+# [4.2.0](https://github.com/nfroidure/swagger-http-router/compare/v4.1.0...v4.2.0) (2018-11-22)
+
+
+### Bug Fixes
+
+* **Tests:** Ensure that body checks reflect real world usage ([70f2fe6](https://github.com/nfroidure/swagger-http-router/commit/70f2fe6))
+
+
+
 # [4.1.0](https://github.com/nfroidure/swagger-http-router/compare/v4.0.0...v4.1.0) (2018-11-11)
 
 
