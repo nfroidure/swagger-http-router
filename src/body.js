@@ -139,7 +139,9 @@ export async function sendBody(
     if (DEBUG_NODE_ENVS.includes(ENV.NODE_ENV)) {
       const validator = ajv.compile(schema);
 
-      if (!validator(response.body)) {
+      // The JSON transforms are here to simulate a real payload
+      // transmission (it removes undefined properties for instance)
+      if (!validator(JSON.parse(JSON.stringify(response.body)))) {
         log('warning', 'Invalid response:', validator.errors);
       }
     }
