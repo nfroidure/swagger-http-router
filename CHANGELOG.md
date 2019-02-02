@@ -1,3 +1,7 @@
+## [4.2.1](https://github.com/nfroidure/swagger-http-router/compare/v4.2.0...v4.2.1) (2019-02-02)
+
+
+
 # [4.2.0](https://github.com/nfroidure/swagger-http-router/compare/v4.1.0...v4.2.0) (2018-11-22)
 
 
